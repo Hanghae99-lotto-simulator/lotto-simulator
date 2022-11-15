@@ -138,8 +138,8 @@ public class LottoService {
         int fifthRank = 0;
 
         for (List<Long> l:lottoList) {
-            int j=0;
-            j++;
+//            int j=0;
+//            j++;
             HashMap<Long,Integer> map = new HashMap<>();
             for(int i= 0 ; i < rounds.size(); i++) {
                 map.put(rounds.get(i), map.getOrDefault(rounds.get(i), 0) +1);

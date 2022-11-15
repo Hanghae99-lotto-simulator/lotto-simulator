@@ -20,6 +20,7 @@ public class LottoService {
     private final LottoRepository lottoRepository;
     private final StoreRepository storeRepository;
     private final RoundRepository roundRepository;
+    private final HashMap<String, Integer> myMap;
 
     //로또 더미데이터 여러개 자동
     @Transactional
@@ -137,9 +138,9 @@ public class LottoService {
         int fourthRank = 0;
         int fifthRank = 0;
 
+        int lottoCnt=0;
         for (List<Long> l:lottoList) {
-//            int j=0;
-//            j++;
+
             HashMap<Long,Integer> map = new HashMap<>();
             for(int i= 0 ; i < rounds.size(); i++) {
                 map.put(rounds.get(i), map.getOrDefault(rounds.get(i), 0) +1);
@@ -157,15 +158,16 @@ public class LottoService {
             }
             if(cnt == 0) {
                 firstRank++;
-
+                System.out.println(lottoCnt);
+                myMap.put(lottos.get(lottoCnt).getStore().getStoreName(), myMap.getOrDefault(lottos.get(lottoCnt).getStore().getStoreName(), 0) + 1);
             }
             else if(cnt == 1 && l.contains(round.getBonus())) {
                 secondRank++;
-                System.out.println(" 2등 l= " +l );
+//                System.out.println(" 2등 l= " +l );
             }
             else if(cnt == 2){
                 thirdRank++;
-                System.out.println(" 3등 l= " +l );
+//                System.out.println(" 3등 l= " +l );
             }
             else if(cnt == 3){
                 fourthRank++;
@@ -174,12 +176,14 @@ public class LottoService {
                 fifthRank++;
             }
 
+            lottoCnt++;
         }
         System.out.println("1등 = " + firstRank + " "
                             +"2등" + secondRank + " "
                             +"3등" + thirdRank + " "
                             +"4등" + fourthRank+ " "
-                            +"5등" + fifthRank
+                            +"5등" + fifthRank + " "
+                            +"1등 뽑힌 가게 : " + myMap
         );
     }
 }

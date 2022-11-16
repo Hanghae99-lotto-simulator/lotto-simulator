@@ -22,6 +22,7 @@ public class LottoService {
     private final LottoRepository lottoRepository;
     private final StoreRepository storeRepository;
     private final RoundRepository roundRepository;
+    private final HashMap<String, Integer> myMap;
 
     //로또 더미데이터 여러개 자동으로 생성
     @Transactional
@@ -80,8 +81,10 @@ public class LottoService {
             allLottoList.add(lottoResponseDto);
         }
 
+
         // 여러 개의 로또를 모아놓은 allLottoList 반환
         return ResponseDto.success(allLottoList); // 결과값이 보기 불편하게 나옴
+
     }
 
 
@@ -92,7 +95,6 @@ public class LottoService {
         List<Integer> lotto = new ArrayList<>();
             //로또 6자리 생성
             do {
-
                 int num = (int) ((Math.random() * 45) + 1);
                 if (!lotto.contains(num)) {
                     lotto.add(num);
@@ -199,9 +201,9 @@ public class LottoService {
         int fourthRank = 0;
         int fifthRank = 0;
 
+        int lottoCnt=0;
         for (List<Long> l:lottoList) {
-            int j=0;
-            j++;
+
             HashMap<Long,Integer> map = new HashMap<>();
             for(int i= 0 ; i < rounds.size(); i++) {
                 map.put(rounds.get(i), map.getOrDefault(rounds.get(i), 0) +1);
@@ -219,15 +221,16 @@ public class LottoService {
             }
             if(cnt == 0) {
                 firstRank++;
-
+                System.out.println(lottoCnt);
+                myMap.put(lottos.get(lottoCnt).getStore().getStoreName(), myMap.getOrDefault(lottos.get(lottoCnt).getStore().getStoreName(), 0) + 1);
             }
             else if(cnt == 1 && l.contains(round.getBonus())) {
                 secondRank++;
-                System.out.println(" 2등 l= " +l );
+//                System.out.println(" 2등 l= " +l );
             }
             else if(cnt == 2){
                 thirdRank++;
-                System.out.println(" 3등 l= " +l );
+//                System.out.println(" 3등 l= " +l );
             }
             else if(cnt == 3){
                 fourthRank++;
@@ -236,7 +239,9 @@ public class LottoService {
                 fifthRank++;
             }
 
+            lottoCnt++;
         }
+
 //        System.out.println("1등 = " + firstRank + " "
 //                            +"2등" + secondRank + " "
 //                            +"3등" + thirdRank + " "
@@ -248,6 +253,7 @@ public class LottoService {
                 +"3등" + thirdRank + " "
                 +"4등" + fourthRank+ " "
                 +"5등" + fifthRank);
+
     }
 }
 //        rounds.add(Round.builder()

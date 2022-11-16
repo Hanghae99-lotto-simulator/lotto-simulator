@@ -53,7 +53,6 @@ public class LottoService {
                     .store(stores.get((int) (Math.random()*stores.size())))
                     .build());
         }
-
     }
     //로또 1나 더미데이터 만들기
     @Transactional
@@ -62,7 +61,6 @@ public class LottoService {
         List<Integer> lotto = new ArrayList<>();
             //로또 6자리 생성
             do {
-
                 int num = (int) ((Math.random() * 45) + 1);
                 if (!lotto.contains(num)) {
                     lotto.add(num);

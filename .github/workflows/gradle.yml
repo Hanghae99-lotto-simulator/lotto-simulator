@@ -55,5 +55,5 @@ jobs:
           script: |
             docker pull rolety2202/lottosimulator:latest
             docker stop lottosimulator
-            docker rm kakaotalk
+            docker rm lottosimulator
             docker run -d --rm --name lottosimulator -p 8080:8080 rolety2202/lottosimulator

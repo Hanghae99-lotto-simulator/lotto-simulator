@@ -11,6 +11,8 @@ import com.lotto.lotto_simulator.repository.LottoRepository;
 import com.lotto.lotto_simulator.repository.RoundRepository;
 import com.lotto.lotto_simulator.repository.StoreRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -254,6 +256,12 @@ public class LottoService {
                 +"4등" + fourthRank+ " "
                 +"5등" + fifthRank);
 
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseDto<?> winningNum(Pageable pageable) {
+        Page<Round> winningNum = roundRepository.findAll(pageable);
+        return ResponseDto.success(winningNum);
     }
 }
 //        rounds.add(Round.builder()

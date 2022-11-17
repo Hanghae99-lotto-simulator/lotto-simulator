@@ -17,8 +17,7 @@ import javax.persistence.*;
 public class Lotto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //private Long lotto_id;
-    private Long id;
+    private Long lotto_id;
 
     @Column(nullable = false, unique = true)
     private String uniqueCode;

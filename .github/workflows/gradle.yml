@@ -57,4 +57,4 @@ jobs:
             docker pull rolety2202/lottosimulator:latest
             docker stop lottosimulator
             docker rm lottosimulator
-            docker run -d --rm --name lottosimulator -p 8080:8080 rolety2202/lottosimulator
+            docker run -d --rm --name lottosimulator --network docker-elk_elk -p 8080:8080 rolety2202/lottosimulator

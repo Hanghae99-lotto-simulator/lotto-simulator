@@ -4,6 +4,9 @@ import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.service.LottoService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,6 +38,12 @@ public class LottoController {
     @PostMapping("/lottoWins/{num}")
     public ResponseDto<?> lottoWin(@PathVariable Long num){
         return lottoService.lottoWins(num);
+    }
+
+    @CrossOrigin
+    @GetMapping("/winningNum")
+    public ResponseDto<?> winningNum(@PageableDefault(page = 0, size = 1) Pageable pageable){
+        return lottoService.winningNum(pageable);
     }
 
 }

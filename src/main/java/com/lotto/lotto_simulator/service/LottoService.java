@@ -3,6 +3,7 @@ package com.lotto.lotto_simulator.service;
 import com.lotto.lotto_simulator.config.ExecutionTime;
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 import com.lotto.lotto_simulator.controller.responseDto.LottoResponseDto;
+import com.lotto.lotto_simulator.controller.responseDto.RankResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.entity.Lotto;
 import com.lotto.lotto_simulator.entity.Round;
@@ -167,7 +168,7 @@ public class LottoService {
         }
 
         //로또 당첨 확인
-    @ExecutionTime
+    @Transactional
     public ResponseDto<?> lottoWins(Long num) {
         Round round = roundRepository.findById(num).orElseThrow();
         //라운드 로또  추첨 번호
@@ -250,11 +251,16 @@ public class LottoService {
 //                            +"4등" + fourthRank+ " "
 //                            +"5등" + fifthRank
 //        );
-        return ResponseDto.success("1등 = " + firstRank + " "
-                +"2등" + secondRank + " "
-                +"3등" + thirdRank + " "
-                +"4등" + fourthRank+ " "
-                +"5등" + fifthRank);
+
+        RankResponseDto rankResponseDto = RankResponseDto.builder()
+                .firstRank(firstRank)
+                .secondRank(secondRank)
+                .thirdRank(thirdRank)
+                .fourthRank(fourthRank)
+                .fifthRank(fifthRank)
+                .build();
+
+        return ResponseDto.success(rankResponseDto);
 
     }
 

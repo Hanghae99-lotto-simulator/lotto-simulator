@@ -182,10 +182,10 @@ public class LottoService {
 //        rounds.add(round.getBonus());
 
         System.out.println("rounds = " + Arrays.toString(rounds.toArray()));
-        List<Lotto> lottos = lottoRepository.findAll();
+        List<LottoDto> lottos = lottoRepository.search();
         List<List<Long>> lottoList = new ArrayList<>();
 
-        for (Lotto l:lottos) {
+        for (LottoDto l:lottos) {
             List<Long> lottoNum= new ArrayList<>();
             lottoNum.add(l.getFirstNum());
             lottoNum.add(l.getSecondNum());
@@ -225,7 +225,7 @@ public class LottoService {
             if(cnt == 0) {
                 firstRank++;
                 System.out.println(lottoCnt);
-                myMap.put(lottos.get(lottoCnt).getStore().getStoreName(), myMap.getOrDefault(lottos.get(lottoCnt).getStore().getStoreName(), 0) + 1);
+//                myMap.put(lottos.get(lottoCnt).getStore().getStoreName(), myMap.getOrDefault(lottos.get(lottoCnt).getStore().getStoreName(), 0) + 1);
             }
             else if(cnt == 1 && l.contains(round.getBonus())) {
                 secondRank++;

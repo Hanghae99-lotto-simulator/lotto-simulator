@@ -269,6 +269,44 @@ public class LottoService {
         Page<Round> winningNum = roundRepository.findAll(pageable);
         return ResponseDto.success(winningNum);
     }
+
+    public ResponseDto<?> lottoCreatesName(Long value) {
+        Store store = storeRepository.findById((long) (Math.random() * (storeRepository.count()))).orElse(null);
+        List<Lotto> lottoList = new ArrayList<>();
+        String uuid = UUID.randomUUID().toString();
+
+        for(int i=1; i <= value; i++) {
+
+            ArrayList<Long> num = new ArrayList<>();
+
+            do {
+                long rndNum;
+                rndNum = ((long) (Math.random() * 45)) + 1;
+                if(!num.contains(rndNum)) {
+                    num.add(rndNum);
+                }
+            }while (num.size() <= 6);
+
+            Collections.sort(num);
+
+            Lotto lotto = Lotto.builder()
+                    .fifthNum(num.get(0))
+                    .secondNum(num.get(1))
+                    .thirdNum(num.get(2))
+                    .fourthNum(num.get(3))
+                    .fifthNum(num.get(4))
+                    .sixthNum(num.get(5))
+                    .uniqueCode(uuid)
+                    .store(store)
+                    .build();
+
+            lottoList.add(lotto);
+
+        }
+        lottoRepository.saveAll(lottoList);
+
+        return ResponseDto.success(lottoList);
+    }
 }
 //        rounds.add(Round.builder()
 //                .id(round.getId())

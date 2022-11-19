@@ -18,15 +18,13 @@ public class LottoDto {
     private Long sixthNum;
 
     private String store;
-    private boolean auto;
     @QueryProjection
-    public LottoDto(Long firstNum, Long secondNum, Long thirdNum, Long fourthNum, Long fifthNum, Long sixthNum, boolean auto) {
+    public LottoDto(Long firstNum, Long secondNum, Long thirdNum, Long fourthNum, Long fifthNum, Long sixthNum) {
         this.firstNum = firstNum;
         this.secondNum = secondNum;
         this.thirdNum = thirdNum;
         this.fourthNum = fourthNum;
         this.fifthNum = fifthNum;
         this.sixthNum = sixthNum;
-        this.auto = auto;
     }
 }

@@ -19,7 +19,7 @@ public class Lotto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lotto_id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String uniqueCode;
 
     @Column(nullable = false)

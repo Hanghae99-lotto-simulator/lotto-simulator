@@ -1,4 +1,4 @@
-package com.lotto.lotto_simulator.repository;
+package com.lotto.lotto_simulator.repository.lottorepository;
 
 
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;

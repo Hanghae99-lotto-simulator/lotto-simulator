@@ -1,6 +1,5 @@
 package com.lotto.lotto_simulator.service;
 
-import com.lotto.lotto_simulator.config.ExecutionTime;
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 import com.lotto.lotto_simulator.controller.responseDto.LottoResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.RankResponseDto;
@@ -8,9 +7,9 @@ import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.entity.Lotto;
 import com.lotto.lotto_simulator.entity.Round;
 import com.lotto.lotto_simulator.entity.Store;
-import com.lotto.lotto_simulator.repository.LottoRepository;
-import com.lotto.lotto_simulator.repository.RoundRepository;
-import com.lotto.lotto_simulator.repository.StoreRepository;
+import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
+import com.lotto.lotto_simulator.repository.roundrepository.RoundRepository;
+import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +31,7 @@ public class LottoService {
     public ResponseDto<?> lottoCreates(Long nums) {
 
         // 전체 로또 판매점 가져오기
-        List<Store> stores =storeRepository.findAll();
+        List<Store> stores =storeRepository.searchAll();
 
         // 로또 한 게임
         List<Integer> lotto;
@@ -94,7 +93,7 @@ public class LottoService {
     //로또 한 개의 더미데이터 만들기
     @Transactional
     public ResponseDto<?> lottoCreate() {
-        List<Store> stores = storeRepository.findAll();
+        List<Store> stores = storeRepository.searchAll();
         List<Integer> lotto = new ArrayList<>();
             //로또 6자리 생성
             do {
@@ -137,7 +136,7 @@ public class LottoService {
         // 수동으로 등록한 로또 번호 가져오기
         @Transactional
         public ResponseDto<?> lottoManual(LottoDto lottoDto) {
-            List<Store> stores = storeRepository.findAll();
+            List<Store> stores = storeRepository.searchAll();
 
             // 중복처리, 에러 처리 여기서 하기 --------------------------------------------------------  --------------
 
@@ -170,7 +169,8 @@ public class LottoService {
         //로또 당첨 확인
     @Transactional
     public ResponseDto<?> lottoWins(Long num) {
-        Round round = roundRepository.findById(num).orElseThrow();
+        Round round = roundRepository.findByRound(num).orElseThrow();
+        System.out.println("round = " + round);
         //라운드 로또  추첨 번호
         List<Long> rounds = new ArrayList<>();
         rounds.add(round.getNum1());
@@ -245,13 +245,6 @@ public class LottoService {
             lottoCnt++;
         }
 
-//        System.out.println("1등 = " + firstRank + " "
-//                            +"2등" + secondRank + " "
-//                            +"3등" + thirdRank + " "
-//                            +"4등" + fourthRank+ " "
-//                            +"5등" + fifthRank
-//        );
-
         RankResponseDto rankResponseDto = RankResponseDto.builder()
                 .firstRank(firstRank)
                 .secondRank(secondRank)
@@ -266,7 +259,7 @@ public class LottoService {
 
     @Transactional(readOnly = true)
     public ResponseDto<?> winningNum(Pageable pageable) {
-        Page<Round> winningNum = roundRepository.findAll(pageable);
+        Page<Round> winningNum = roundRepository.pageable(pageable);
         return ResponseDto.success(winningNum);
     }
 }

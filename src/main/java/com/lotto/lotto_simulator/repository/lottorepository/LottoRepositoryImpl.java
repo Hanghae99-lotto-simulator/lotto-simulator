@@ -1,9 +1,8 @@
-package com.lotto.lotto_simulator.repository;
+package com.lotto.lotto_simulator.repository.lottorepository;
 
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 
 import com.lotto.lotto_simulator.controller.requestDto.QLottoDto;
-import com.lotto.lotto_simulator.entity.QLotto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -19,7 +18,6 @@ import static com.lotto.lotto_simulator.entity.QLotto.*;
 public class LottoRepositoryImpl implements LottoRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
-
     @Override
     public List<LottoDto> search() {
         return  queryFactory
@@ -28,7 +26,8 @@ public class LottoRepositoryImpl implements LottoRepositoryCustom {
                         lotto.thirdNum,
                         lotto.fourthNum,
                         lotto.fifthNum,
-                        lotto.sixthNum))
+                        lotto.sixthNum
+                        ))
                 .from(lotto)
                 .fetch();
     }

@@ -45,5 +45,4 @@ public class LottoController {
     public ResponseDto<?> winningNum(@PageableDefault(page = 0, size = 1) Pageable pageable){
         return lottoService.winningNum(pageable);
     }
-
 }

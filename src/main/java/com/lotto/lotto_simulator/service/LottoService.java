@@ -285,12 +285,12 @@ public class LottoService {
                 if(!num.contains(rndNum)) {
                     num.add(rndNum);
                 }
-            }while (num.size() <= 6);
+            }while (num.size() < 6);
 
             Collections.sort(num);
 
             Lotto lotto = Lotto.builder()
-                    .fifthNum(num.get(0))
+                    .firstNum(num.get(0))
                     .secondNum(num.get(1))
                     .thirdNum(num.get(2))
                     .fourthNum(num.get(3))
@@ -305,7 +305,7 @@ public class LottoService {
         }
         lottoRepository.saveAll(lottoList);
 
-        return ResponseDto.success(lottoList);
+        return ResponseDto.success("success");
     }
 }
 //        rounds.add(Round.builder()

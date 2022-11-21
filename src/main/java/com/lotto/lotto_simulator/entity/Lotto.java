@@ -44,5 +44,4 @@ public class Lotto {
     @JoinColumn(name="store_id")
     private Store store;
 
-
 }

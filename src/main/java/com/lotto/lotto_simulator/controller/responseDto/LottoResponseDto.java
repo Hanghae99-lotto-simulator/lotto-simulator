@@ -1,5 +1,6 @@
 package com.lotto.lotto_simulator.controller.responseDto;
 
+import com.lotto.lotto_simulator.entity.Store;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,4 +17,6 @@ public class LottoResponseDto {
     private Long fourthNum;
     private Long fifthNum;
     private Long sixthNum;
+    private String uniqueCode;
+    private Store store;
 }

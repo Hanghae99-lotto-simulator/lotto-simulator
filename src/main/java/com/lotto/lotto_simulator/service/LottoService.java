@@ -29,9 +29,10 @@ public class LottoService {
     //로또 더미데이터 여러개 자동으로 생성
     @Transactional
     public ResponseDto<?> lottoCreates(Long nums) {
+        String uuid = UUID.randomUUID().toString();
 
         // 전체 로또 판매점 가져오기
-        List<Store> stores =storeRepository.searchAll();
+        List<Store> stores = storeRepository.searchAll();
 
         // 로또 한 게임
         List<Integer> lotto;
@@ -39,16 +40,16 @@ public class LottoService {
         // 여러 개의 로또를 모아놓은 리스트
         List<LottoResponseDto> allLottoList = new ArrayList<>();
 
-        for(int i=0; i<nums; i++){
+        for (int i = 0; i < nums; i++) {
 
             //로또 6자리 생성
-            lotto=new ArrayList<>();
-            do{
-                int num = (int)((Math.random() * 45) + 1);
-                if(!lotto.contains(num)){
+            lotto = new ArrayList<>();
+            do {
+                int num = (int) ((Math.random() * 45) + 1);
+                if (!lotto.contains(num)) {
                     lotto.add(num);
                 }
-            }while(lotto.size()<6);
+            } while (lotto.size() < 6);
 
             //정렬
             Collections.sort(lotto);
@@ -64,8 +65,8 @@ public class LottoService {
                     .fourthNum((long) lotto.get(3))
                     .fifthNum((long) lotto.get(4))
                     .sixthNum((long) lotto.get(5))
-                    .uniqueCode(UUID.randomUUID().toString())
-                    .store(stores.get((int) (Math.random()*stores.size())))
+                    .uniqueCode(uuid)
+                    .store(stores.get((int) (Math.random() * stores.size())))
                     .build();
 
             lottoRepository.save(game);
@@ -78,6 +79,8 @@ public class LottoService {
                     .fourthNum(game.getFourthNum())
                     .fifthNum(game.getFifthNum())
                     .sixthNum(game.getSixthNum())
+                    .uniqueCode(game.getUniqueCode())
+                    .store(game.getStore())
                     .build();
 
             allLottoList.add(lottoResponseDto);
@@ -95,17 +98,17 @@ public class LottoService {
     public ResponseDto<?> lottoCreate() {
         List<Store> stores = storeRepository.searchAll();
         List<Integer> lotto = new ArrayList<>();
-            //로또 6자리 생성
-            do {
-                int num = (int) ((Math.random() * 45) + 1);
-                if (!lotto.contains(num)) {
-                    lotto.add(num);
-                }
-            }while(lotto.size() < 6);
+        //로또 6자리 생성
+        do {
+            int num = (int) ((Math.random() * 45) + 1);
+            if (!lotto.contains(num)) {
+                lotto.add(num);
+            }
+        } while (lotto.size() < 6);
 
 
-            //정렬
-            Collections.sort(lotto);
+        //정렬
+        Collections.sort(lotto);
 
         Lotto game = Lotto.builder()
                 .firstNum((long) lotto.get(0))
@@ -115,7 +118,7 @@ public class LottoService {
                 .fifthNum((long) lotto.get(4))
                 .sixthNum((long) lotto.get(5))
                 .uniqueCode(UUID.randomUUID().toString())
-                .store(stores.get((int) (Math.random()*stores.size())))
+                .store(stores.get((int) (Math.random() * stores.size())))
                 .build();
 
         lottoRepository.save(game);
@@ -130,43 +133,43 @@ public class LottoService {
                 .sixthNum(game.getSixthNum())
                 .build();
 
-            return ResponseDto.success(lottoResponseDto);
-        }
+        return ResponseDto.success(lottoResponseDto);
+    }
 
-        // 수동으로 등록한 로또 번호 가져오기
-        @Transactional
-        public ResponseDto<?> lottoManual(LottoDto lottoDto) {
-            List<Store> stores = storeRepository.searchAll();
+    // 수동으로 등록한 로또 번호 가져오기
+    @Transactional
+    public ResponseDto<?> lottoManual(LottoDto lottoDto) {
+        List<Store> stores = storeRepository.searchAll();
 
-            // 중복처리, 에러 처리 여기서 하기 --------------------------------------------------------  --------------
+        // 중복처리, 에러 처리 여기서 하기 --------------------------------------------------------  --------------
 
-            // 로또 번호를 오름차순으로 정렬
-            List<Long> lottoNum = new ArrayList<Long>();
-            lottoNum.add(lottoDto.getFirstNum());
-            lottoNum.add(lottoDto.getSecondNum());
-            lottoNum.add(lottoDto.getThirdNum());
-            lottoNum.add(lottoDto.getFourthNum());
-            lottoNum.add(lottoDto.getFifthNum());
-            lottoNum.add(lottoDto.getSixthNum());
+        // 로또 번호를 오름차순으로 정렬
+        List<Long> lottoNum = new ArrayList<Long>();
+        lottoNum.add(lottoDto.getFirstNum());
+        lottoNum.add(lottoDto.getSecondNum());
+        lottoNum.add(lottoDto.getThirdNum());
+        lottoNum.add(lottoDto.getFourthNum());
+        lottoNum.add(lottoDto.getFifthNum());
+        lottoNum.add(lottoDto.getSixthNum());
 
-            Collections.sort(lottoNum);
+        Collections.sort(lottoNum);
 
-            lottoRepository.save(Lotto.builder()
-                    .firstNum(lottoNum.get(0))
-                    .secondNum(lottoNum.get(1))
-                    .thirdNum(lottoNum.get(2))
-                    .fourthNum(lottoNum.get(3))
-                    .fifthNum(lottoNum.get(4))
-                    .sixthNum(lottoNum.get(5))
-                    .uniqueCode(UUID.randomUUID().toString())
-                    .store(stores.get((int) (Math.random()*stores.size())))
-                    .build());
+        lottoRepository.save(Lotto.builder()
+                .firstNum(lottoNum.get(0))
+                .secondNum(lottoNum.get(1))
+                .thirdNum(lottoNum.get(2))
+                .fourthNum(lottoNum.get(3))
+                .fifthNum(lottoNum.get(4))
+                .sixthNum(lottoNum.get(5))
+                .uniqueCode(UUID.randomUUID().toString())
+                .store(stores.get((int) (Math.random() * stores.size())))
+                .build());
 
-            return ResponseDto.success(lottoDto);
-            // 어떤 값이 입력 되었는지 response
-        }
+        return ResponseDto.success(lottoDto);
+        // 어떤 값이 입력 되었는지 response
+    }
 
-        //로또 당첨 확인
+    //로또 당첨 확인
     @Transactional
     public ResponseDto<?> lottoWins(Long num) {
         Round round = roundRepository.findByRound(num).orElseThrow();
@@ -185,8 +188,8 @@ public class LottoService {
         List<LottoDto> lottos = lottoRepository.search();
         List<List<Long>> lottoList = new ArrayList<>();
 
-        for (LottoDto l:lottos) {
-            List<Long> lottoNum= new ArrayList<>();
+        for (LottoDto l : lottos) {
+            List<Long> lottoNum = new ArrayList<>();
             lottoNum.add(l.getFirstNum());
             lottoNum.add(l.getSecondNum());
             lottoNum.add(l.getThirdNum());
@@ -204,41 +207,37 @@ public class LottoService {
         int fourthRank = 0;
         int fifthRank = 0;
 
-        int lottoCnt=0;
-        for (List<Long> l:lottoList) {
+        int lottoCnt = 0;
+        for (List<Long> l : lottoList) {
 
-            HashMap<Long,Integer> map = new HashMap<>();
-            for(int i= 0 ; i < rounds.size(); i++) {
-                map.put(rounds.get(i), map.getOrDefault(rounds.get(i), 0) +1);
+            HashMap<Long, Integer> map = new HashMap<>();
+            for (int i = 0; i < rounds.size(); i++) {
+                map.put(rounds.get(i), map.getOrDefault(rounds.get(i), 0) + 1);
             }
-           for(int i = 0; i<l.size(); i++){
-               map.put(l.get(i), map.getOrDefault(l.get(i), 0) -1);
-           }
+            for (int i = 0; i < l.size(); i++) {
+                map.put(l.get(i), map.getOrDefault(l.get(i), 0) - 1);
+            }
 
 
             int cnt = 0;
-            for(Long key : map.keySet()) {
-                if(map.get(key) > 0) {
+            for (Long key : map.keySet()) {
+                if (map.get(key) > 0) {
                     cnt++;
                 }
             }
-            if(cnt == 0) {
+            if (cnt == 0) {
                 firstRank++;
                 System.out.println(lottoCnt);
 //                myMap.put(lottos.get(lottoCnt).getStore().getStoreName(), myMap.getOrDefault(lottos.get(lottoCnt).getStore().getStoreName(), 0) + 1);
-            }
-            else if(cnt == 1 && l.contains(round.getBonus())) {
+            } else if (cnt == 1 && l.contains(round.getBonus())) {
                 secondRank++;
 //                System.out.println(" 2등 l= " +l );
-            }
-            else if(cnt == 2){
+            } else if (cnt == 2) {
                 thirdRank++;
 //                System.out.println(" 3등 l= " +l );
-            }
-            else if(cnt == 3){
+            } else if (cnt == 3) {
                 fourthRank++;
-            }
-            else if(cnt == 4){
+            } else if (cnt == 4) {
                 fifthRank++;
             }
 
@@ -262,45 +261,48 @@ public class LottoService {
         Page<Round> winningNum = roundRepository.pageable(pageable);
         return ResponseDto.success(winningNum);
     }
-
-    public ResponseDto<?> lottoCreatesName(Long value) {
-        Store store = storeRepository.findById((long) (Math.random() * (storeRepository.count()))).orElse(null);
-        List<Lotto> lottoList = new ArrayList<>();
-        String uuid = UUID.randomUUID().toString();
-
-        for(int i=1; i <= value; i++) {
-
-            ArrayList<Long> num = new ArrayList<>();
-
-            do {
-                long rndNum;
-                rndNum = ((long) (Math.random() * 45)) + 1;
-                if(!num.contains(rndNum)) {
-                    num.add(rndNum);
-                }
-            }while (num.size() < 6);
-
-            Collections.sort(num);
-
-            Lotto lotto = Lotto.builder()
-                    .firstNum(num.get(0))
-                    .secondNum(num.get(1))
-                    .thirdNum(num.get(2))
-                    .fourthNum(num.get(3))
-                    .fifthNum(num.get(4))
-                    .sixthNum(num.get(5))
-                    .uniqueCode(uuid)
-                    .store(store)
-                    .build();
-
-            lottoList.add(lotto);
-
-        }
-        lottoRepository.saveAll(lottoList);
-
-        return ResponseDto.success("success");
-    }
 }
+
+//    public ResponseDto<?> lottoCreatesName(Long value) {
+//        Store store = storeRepository.findById((long) (Math.random() * (storeRepository.count()))).orElse(null);
+//        List<Lotto> lottoList = new ArrayList<>();
+//        String uuid = UUID.randomUUID().toString();
+//
+//        for(int i=1; i <= value; i++) {
+//
+//            ArrayList<Long> num = new ArrayList<>();
+//
+//            do {
+//                long rndNum;
+//                rndNum = ((long) (Math.random() * 45)) + 1;
+//                if(!num.contains(rndNum)) {
+//                    num.add(rndNum);
+//                }
+//            }while (num.size() < 6);
+//
+//            Collections.sort(num);
+//
+//            Lotto lotto = Lotto.builder()
+//                    .firstNum(num.get(0))
+//                    .secondNum(num.get(1))
+//                    .thirdNum(num.get(2))
+//                    .fourthNum(num.get(3))
+//                    .fifthNum(num.get(4))
+//                    .sixthNum(num.get(5))
+//                    .uniqueCode(uuid)
+//                    .store(store)
+//                    .build();
+//
+//            lottoList.add(lotto);
+//
+//
+//        }
+//
+//        lottoRepository.saveAll(lottoList);
+//
+//        return ResponseDto.success("success");
+//    }
+//}
 //        rounds.add(Round.builder()
 //                .id(round.getId())
 //                .num1(round.getNum1())

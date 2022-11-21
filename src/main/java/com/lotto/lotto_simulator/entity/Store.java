@@ -1,5 +1,6 @@
 package com.lotto.lotto_simulator.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,11 +27,10 @@ public class Store {
     @Column(nullable = false)
     private String lotAddress;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "store",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<Lotto> lottos = new ArrayList<>();
-
-
 
 }

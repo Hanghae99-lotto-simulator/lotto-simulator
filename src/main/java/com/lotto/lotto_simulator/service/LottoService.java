@@ -24,7 +24,7 @@ public class LottoService {
     private final LottoRepository lottoRepository;
     private final StoreRepository storeRepository;
     private final RoundRepository roundRepository;
-    private final HashMap<String, Integer> myMap;
+//    private final HashMap<String, Integer> myMap;
 
     //로또 더미데이터 여러개 자동으로 생성
     @Transactional
@@ -51,10 +51,10 @@ public class LottoService {
                 }
             } while (lotto.size() < 6);
 
+
             //정렬
             Collections.sort(lotto);
 //            double storeId =(Math.random()*6947)+1;
-//
 //            Store store = storeRepository.findById((long) storeId).orElseThrow();
 //            System.out.println("lotto = " + Arrays.toString(lotto));
 
@@ -92,49 +92,6 @@ public class LottoService {
 
     }
 
-
-    //로또 한 개의 더미데이터 만들기
-    @Transactional
-    public ResponseDto<?> lottoCreate() {
-        List<Store> stores = storeRepository.searchAll();
-        List<Integer> lotto = new ArrayList<>();
-        //로또 6자리 생성
-        do {
-            int num = (int) ((Math.random() * 45) + 1);
-            if (!lotto.contains(num)) {
-                lotto.add(num);
-            }
-        } while (lotto.size() < 6);
-
-
-        //정렬
-        Collections.sort(lotto);
-
-        Lotto game = Lotto.builder()
-                .firstNum((long) lotto.get(0))
-                .secondNum((long) lotto.get(1))
-                .thirdNum((long) lotto.get(2))
-                .fourthNum((long) lotto.get(3))
-                .fifthNum((long) lotto.get(4))
-                .sixthNum((long) lotto.get(5))
-                .uniqueCode(UUID.randomUUID().toString())
-                .store(stores.get((int) (Math.random() * stores.size())))
-                .build();
-
-        lottoRepository.save(game);
-
-        // 반환할 DTO 작성
-        LottoResponseDto lottoResponseDto = LottoResponseDto.builder()
-                .firstNum(game.getFirstNum())
-                .secondNum(game.getSecondNum())
-                .thirdNum(game.getThirdNum())
-                .fourthNum(game.getFourthNum())
-                .fifthNum(game.getFifthNum())
-                .sixthNum(game.getSixthNum())
-                .build();
-
-        return ResponseDto.success(lottoResponseDto);
-    }
 
     // 수동으로 등록한 로또 번호 가져오기
     @Transactional
@@ -199,7 +156,6 @@ public class LottoService {
             lottoList.add(lottoNum);
         }
 
-
         //등수
         int firstRank = 0;
         int secondRank = 0;
@@ -208,6 +164,7 @@ public class LottoService {
         int fifthRank = 0;
 
         int lottoCnt = 0;
+
         for (List<Long> l : lottoList) {
 
             HashMap<Long, Integer> map = new HashMap<>();

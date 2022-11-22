@@ -5,11 +5,8 @@ import com.lotto.lotto_simulator.controller.responseDto.LottoResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.RankResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.entity.Lotto;
-import com.lotto.lotto_simulator.entity.LottoCombination;
 import com.lotto.lotto_simulator.entity.Round;
 import com.lotto.lotto_simulator.entity.Store;
-import com.lotto.lotto_simulator.repository.lottocombinationrepository.JdbcLottoCombinationRepository;
-import com.lotto.lotto_simulator.repository.lottocombinationrepository.LottoCombinationRepository;
 import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
 import com.lotto.lotto_simulator.repository.roundrepository.RoundRepository;
 import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
@@ -63,6 +60,7 @@ public class LottoService {
             //정렬
             Collections.sort(lotto);
 //            double storeId =(Math.random()*6947)+1;
+//
 //            Store store = storeRepository.findById((long) storeId).orElseThrow();
 //            System.out.println("lotto = " + Arrays.toString(lotto));
 

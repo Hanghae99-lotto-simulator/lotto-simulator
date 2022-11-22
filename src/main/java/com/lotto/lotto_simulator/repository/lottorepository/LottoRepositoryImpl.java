@@ -31,4 +31,19 @@ public class LottoRepositoryImpl implements LottoRepositoryCustom {
                 .from(lotto)
                 .fetch();
     }
+
+    @Override
+    public List<LottoDto> uniqueCodeSearch(String uniqueCode) {
+        return queryFactory
+                .select(new QLottoDto(lotto.firstNum,
+                        lotto.secondNum,
+                        lotto.thirdNum,
+                        lotto.fourthNum,
+                        lotto.fifthNum,
+                        lotto.sixthNum
+                ))
+                .from(lotto)
+                .where(lotto.uniqueCode.eq(uniqueCode))
+                .fetch();
+    }
 }

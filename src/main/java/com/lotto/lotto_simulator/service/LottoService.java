@@ -1,7 +1,7 @@
 package com.lotto.lotto_simulator.service;
 
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
-import com.lotto.lotto_simulator.controller.requestDto.UniqueIdDto;
+import com.lotto.lotto_simulator.controller.requestDto.UniqueCodeDto;
 import com.lotto.lotto_simulator.controller.responseDto.LottoResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.RankResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
@@ -221,13 +221,13 @@ public class LottoService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<?> lottosInfo(Long num, UniqueIdDto uniqueIdDto) {
+    public ResponseDto<?> lottoInfo(Long num, UniqueCodeDto uniqueIdDto) {
 
-        // 매개변수의 유니크 코드를 통해 해당 유니크 코드를 가지고 있는 Lotto를 반환
-        List<Lotto> lottoList = lottoRepository.findAllByUniqueCode(uniqueIdDto.getId());
+        // 매개변수로 들어온 유니크 코드를 가지고 있는 Lotto 전부 가져오기
+        List<LottoDto> lottoList = lottoRepository.uniqueCodeSearch(uniqueIdDto.getUniqueCode());
 
         // num라운드의 당첨번호 정보를 가져온다.
-        Round round = roundRepository.findById(num).orElseThrow();
+        Round round = roundRepository.findByRound(num).orElseThrow();
         List<Long> rounds = new ArrayList<>();
         rounds.add(round.getNum1());
         rounds.add(round.getNum2());
@@ -236,21 +236,10 @@ public class LottoService {
         rounds.add(round.getNum5());
         rounds.add(round.getNum6());
 
-        System.out.println(rounds);
-        List<LottoDto> lottoDtoList = new ArrayList<>();
-
-        // 1번부터 6번까지의 데이터만 가지고 있는 LottoDto를 생성하여 lottoDtoList에 추가
-        for(int i = 0; i < lottoList.size(); i++){
-            LottoDto lottoDto = new LottoDto(lottoList.get(i).getFirstNum(), lottoList.get(i).getSecondNum(), lottoList.get(i).getThirdNum(),
-                    lottoList.get(i).getFourthNum(), lottoList.get(i).getFifthNum(),lottoList.get(i).getSixthNum());
-
-
-            lottoDtoList.add(lottoDto);
-        }
 
         List<List<Long>> singleLottoNum = new ArrayList<>();
 
-        for (LottoDto l:lottoDtoList) {
+        for (LottoDto l:lottoList) {
             List<Long> lottoNum= new ArrayList<>();
             lottoNum.add(l.getFirstNum());
             lottoNum.add(l.getSecondNum());
@@ -267,7 +256,6 @@ public class LottoService {
         int fourthRank = 0;
         int fifthRank = 0;
 
-        int lottoCnt=0;
         for (List<Long> l:singleLottoNum) {
 
             HashMap<Long,Integer> map = new HashMap<>();
@@ -287,16 +275,12 @@ public class LottoService {
             }
             if(cnt == 0) {
                 firstRank++;
-                System.out.println(lottoCnt);
-//                myMap.put(lottos.get(lottoCnt).getStore().getStoreName(), myMap.getOrDefault(lottos.get(lottoCnt).getStore().getStoreName(), 0) + 1);
             }
             else if(cnt == 1 && l.contains(round.getBonus())) {
                 secondRank++;
-//                System.out.println(" 2등 l= " +l );
             }
             else if(cnt == 1){
                 thirdRank++;
-//                System.out.println(" 3등 l= " +l );
             }
             else if(cnt == 2){
                 fourthRank++;
@@ -306,15 +290,7 @@ public class LottoService {
                 System.out.println("5등 = " + l);
             }
 
-            lottoCnt++;
         }
-
-//        System.out.println("1등 = " + firstRank + " "
-//                            +"2등" + secondRank + " "
-//                            +"3등" + thirdRank + " "
-//                            +"4등" + fourthRank+ " "
-//                            +"5등" + fifthRank
-//        );
 
         RankResponseDto rankResponseDto = RankResponseDto.builder()
                 .firstRank(firstRank)

@@ -1,12 +1,11 @@
 package com.lotto.lotto_simulator.controller;
 
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
-import com.lotto.lotto_simulator.controller.requestDto.UniqueIdDto;
+import com.lotto.lotto_simulator.controller.requestDto.UniqueCodeDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.service.LottoService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,9 +42,9 @@ public class LottoController {
 
     @CrossOrigin
     @PostMapping("/lottos/info/{num}")
-    public ResponseDto<?> lottosInfo( @PathVariable Long num,
-                                      @RequestBody UniqueIdDto uniqueIdDto){
-        return lottoService.lottosInfo(num, uniqueIdDto);
+    public ResponseDto<?> lottoInfo( @PathVariable Long num,
+                                      @RequestBody UniqueCodeDto uniqueIdDto){
+        return lottoService.lottoInfo(num, uniqueIdDto);
     }
 //    //로또 더미데이터 여러개(같은 UUID, 지점)
 //    @CrossOrigin

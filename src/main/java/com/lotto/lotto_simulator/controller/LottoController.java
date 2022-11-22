@@ -40,6 +40,11 @@ public class LottoController {
         return lottoService.winningNum(pageable);
     }
 
+    @CrossOrigin
+    @PostMapping("/lottosAutos/{nums}")
+    public ResponseDto<?> lottoAutoss(@PathVariable Long nums){
+        return lottoService.lottoCombinationCreate(nums);
+    }
 //    //로또 더미데이터 여러개(같은 UUID, 지점)
 //    @CrossOrigin
 //    @PostMapping("/lottoAutosName/{num}")

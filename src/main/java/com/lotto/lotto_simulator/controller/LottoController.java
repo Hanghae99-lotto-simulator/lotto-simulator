@@ -20,12 +20,6 @@ public class LottoController {
     public ResponseDto<?> lottoAutos(@PathVariable Long nums){
         return lottoService.lottoCreates(nums);
     }
-    //로또 한개 자동
-    @CrossOrigin
-    @PostMapping("/lottoAutos")
-    public ResponseDto<?> lottoAuto() {
-        return lottoService.lottoCreate();
-    }
 
     @CrossOrigin
     @PostMapping("/lottoManuals")
@@ -46,11 +40,16 @@ public class LottoController {
         return lottoService.winningNum(pageable);
     }
 
-    //로또 더미데이터 여러개(같은 UUID, 지점)
     @CrossOrigin
-    @PostMapping("/lottoAutosName/{num}")
-    public ResponseDto<?> lottoAutosName(@PathVariable Long num){
-        return lottoService.lottoCreatesName(num);
+    @PostMapping("/lottosAutos/{nums}")
+    public ResponseDto<?> lottoAutoss(@PathVariable Long nums){
+        return lottoService.lottoCombinationCreate(nums);
     }
+//    //로또 더미데이터 여러개(같은 UUID, 지점)
+//    @CrossOrigin
+//    @PostMapping("/lottoAutosName/{num}")
+//    public ResponseDto<?> lottoAutosName(@PathVariable Long num){
+//        return lottoService.lottoCreatesName(num);
+//    }
 
 }

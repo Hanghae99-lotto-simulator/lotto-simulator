@@ -1,6 +1,7 @@
 package com.lotto.lotto_simulator.controller;
 
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
+import com.lotto.lotto_simulator.controller.requestDto.UniqueIdDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.service.LottoService;
 import lombok.AllArgsConstructor;
@@ -40,6 +41,12 @@ public class LottoController {
         return lottoService.winningNum(pageable);
     }
 
+    @CrossOrigin
+    @PostMapping("/lottos/info/{num}")
+    public ResponseDto<?> lottosInfo( @PathVariable Long num,
+                                      @RequestBody UniqueIdDto uniqueIdDto){
+        return lottoService.lottosInfo(num, uniqueIdDto);
+    }
 //    //로또 더미데이터 여러개(같은 UUID, 지점)
 //    @CrossOrigin
 //    @PostMapping("/lottoAutosName/{num}")

@@ -254,13 +254,12 @@ public class LottoService {
         // 여러 개의 로또를 모아놓은 리스트
         List<LottoResponseDto> allLottoList = new ArrayList<>();
 
-        int combinationListSize = ((int) (Math.random() * combinationList.size()));
 
         for (int i = 0; i < nums; i++) {
 
             //로또 6자리 생성
             lotto = new ArrayList<>();
-            lotto.add(combinationList.get(combinationListSize));
+            lotto.add(combinationList.get(((int) (Math.random() * combinationList.size()))));
             System.out.println("lotto = " + lotto);
 
 

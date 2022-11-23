@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static com.lotto.lotto_simulator.entity.QLotto.lotto;
+
 @Service
 @AllArgsConstructor
 public class LottoService {
@@ -256,6 +258,14 @@ public class LottoService {
         int fourthRank = 0;
         int fifthRank = 0;
 
+        // 등수와 당첨번호를 모아넣는 Map
+        HashMap<Integer, List<List<Long>>> winLottoMap = new HashMap<>();
+        List<List<Long>> firstList = new ArrayList<>();
+        List<List<Long>> secondList = new ArrayList<>();
+        List<List<Long>> thirdList = new ArrayList<>();
+        List<List<Long>> fourthList = new ArrayList<>();
+        List<List<Long>> fifthList = new ArrayList<>();
+
         for (List<Long> l:singleLottoNum) {
 
             HashMap<Long,Integer> map = new HashMap<>();
@@ -275,32 +285,45 @@ public class LottoService {
             }
             if(cnt == 0) {
                 firstRank++;
+                firstList.add(l);
             }
             else if(cnt == 1 && l.contains(round.getBonus())) {
                 secondRank++;
+                secondList.add(l);
             }
             else if(cnt == 1){
                 thirdRank++;
+                thirdList.add(l);
             }
             else if(cnt == 2){
                 fourthRank++;
+                fourthList.add(l);
             }
             else if(cnt == 3){
                 fifthRank++;
+                fifthList.add(l);
                 System.out.println("5등 = " + l);
             }
 
         }
 
-        RankResponseDto rankResponseDto = RankResponseDto.builder()
-                .firstRank(firstRank)
-                .secondRank(secondRank)
-                .thirdRank(thirdRank)
-                .fourthRank(fourthRank)
-                .fifthRank(fifthRank)
-                .build();
+        winLottoMap.put(1, firstList);
+        winLottoMap.put(2, secondList);
+        winLottoMap.put(3, thirdList);
+        winLottoMap.put(4, fourthList);
+        winLottoMap.put(5, fifthList);
 
-        return ResponseDto.success(rankResponseDto);
+//        System.out.println(winLottoMap);
+
+//        RankResponseDto rankResponseDto = RankResponseDto.builder()
+//                .firstRank(firstRank)
+//                .secondRank(secondRank)
+//                .thirdRank(thirdRank)
+//                .fourthRank(fourthRank)
+//                .fifthRank(fifthRank)
+//                .build();
+
+        return ResponseDto.success(winLottoMap);
     }
 }
 

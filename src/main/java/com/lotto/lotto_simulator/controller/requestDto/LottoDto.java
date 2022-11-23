@@ -10,16 +10,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LottoDto {
 
-    private Long firstNum;
-    private Long secondNum;
-    private Long thirdNum;
-    private Long fourthNum;
-    private Long fifthNum;
-    private Long sixthNum;
+    private Byte firstNum;
+    private Byte secondNum;
+    private Byte thirdNum;
+    private Byte fourthNum;
+    private Byte fifthNum;
+    private Byte sixthNum;
 
     private String store;
     @QueryProjection
-    public LottoDto(Long firstNum, Long secondNum, Long thirdNum, Long fourthNum, Long fifthNum, Long sixthNum) {
+    public LottoDto(Byte firstNum, Byte secondNum, Byte thirdNum, Byte fourthNum, Byte fifthNum, Byte sixthNum) {
         this.firstNum = firstNum;
         this.secondNum = secondNum;
         this.thirdNum = thirdNum;

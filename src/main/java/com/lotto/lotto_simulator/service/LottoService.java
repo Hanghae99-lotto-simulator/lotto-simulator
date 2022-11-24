@@ -2,9 +2,7 @@ package com.lotto.lotto_simulator.service;
 
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 import com.lotto.lotto_simulator.controller.requestDto.UniqueCodeDto;
-import com.lotto.lotto_simulator.controller.responseDto.LottoResponseDto;
-import com.lotto.lotto_simulator.controller.responseDto.RankResponseDto;
-import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
+import com.lotto.lotto_simulator.controller.responseDto.*;
 import com.lotto.lotto_simulator.entity.Lotto;
 import com.lotto.lotto_simulator.entity.LottoCombination;
 import com.lotto.lotto_simulator.entity.Round;
@@ -22,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static com.lotto.lotto_simulator.entity.QLotto.lotto;
-
 @Service
 @AllArgsConstructor
 public class LottoService {
@@ -35,21 +31,24 @@ public class LottoService {
 
 //    private final HashMap<String, Integer> myMap;
 
-    //로또 더미데이터 여러개 자동으로 생성
-//    @Transactional
+    //로또 더미데이터 nums개 만큼 자동으로 생성
+    @Transactional
     public ResponseDto<?> lottoCreates(Long nums) {
-        String uuid = UUID.randomUUID().toString();
+
+        String uniqueCode = UUID.randomUUID().toString();
+
+        // 6자리의 번호를 모아둔 로또 한 게임
+        List<Byte> lotto;
+
+        // DB에 insert 시킬 로또 list
         List<Lotto> lottos=new ArrayList<>();
-//        List<LottoCombination> combinationList =lottoCombinationRepository.findCombination();
+
+        // front에 반환할 여러 개의 로또를 모아놓은 리스트
+        List<List<Byte>> lottoList = new ArrayList<>();
 
         // 전체 로또 판매점 가져오기
         List<Store> stores = storeRepository.searchAll();
 
-        // 로또 한 게임
-        List<Byte> lotto;
-
-        // 여러 개의 로또를 모아놓은 리스트
-        List<LottoResponseDto> allLottoList = new ArrayList<>();
 
         for (int i = 0; i < nums; i++) {
 
@@ -65,10 +64,6 @@ public class LottoService {
 
             //정렬
             Collections.sort(lotto);
-//            double storeId =(Math.random()*6947)+1;
-//
-//            Store store = storeRepository.findById((long) storeId).orElseThrow();
-//            System.out.println("lotto = " + Arrays.toString(lotto));
 
             Lotto game = Lotto.builder()
                     .firstNum(lotto.get(0))
@@ -77,41 +72,26 @@ public class LottoService {
                     .fourthNum(lotto.get(3))
                     .fifthNum(lotto.get(4))
                     .sixthNum(lotto.get(5))
-                    .uniqueCode(uuid)
+                    .uniqueCode(uniqueCode)
                     .store(stores.get((int) (Math.random() * stores.size())))
                     .build();
 
-//            lottoRepository.save(game);
-
-            // 반환할 DTO 작성
-//            LottoResponseDto lottoResponseDto = LottoResponseDto.builder()
-//                    .firstNum(game.getFirstNum())
-//                    .secondNum(game.getSecondNum())
-//                    .thirdNum(game.getThirdNum())
-//                    .fourthNum(game.getFourthNum())
-//                    .fifthNum(game.getFifthNum())
-//                    .sixthNum(game.getSixthNum())
-//                    .uniqueCode(game.getUniqueCode())
-//                    .store(game.getStore())
-//                    .build();
-//            LottoResponseDto lottoResponseDto = LottoResponseDto.builder()
-//                    .firstNum((long) lotto.get(0))
-//                    .secondNum((long) lotto.get(1))
-//                    .thirdNum((long) lotto.get(2))
-//                    .fourthNum((long) lotto.get(3))
-//                    .fifthNum((long) lotto.get(4))
-//                    .sixthNum((long) lotto.get(5))
-//                    .uniqueCode(uuid)
-//                    .store(stores.get((int) (Math.random() * stores.size())))
-//                    .build();
+            // DB애 넣을 로또 리스트
             lottos.add(game);
-//            allLottoList.add(lottoResponseDto);
+
+            // 반환할 로또 리스트
+            lottoList.add(lotto);
         }
 
+        // JDBC_TEMPLATE을 이용한 batch insert
         jdbcLottoCombinationRepository.batchInsertLottos(lottos);
-        // 여러 개의 로또를 모아놓은 allLottoList 반환
-//        return ResponseDto.success(allLottoList); // 결과값이 보기 불편하게 나옴
-        return ResponseDto.success(lottos);
+
+
+        LottosResponseDto lottosResponseDto = LottosResponseDto.builder()
+                .lottoArray(lottoList)
+                .uniqueCode(uniqueCode)
+                .build();
+        return ResponseDto.success(lottosResponseDto);
     }
 
 

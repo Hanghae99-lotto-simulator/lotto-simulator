@@ -44,9 +44,9 @@ public class LottoController {
     @CrossOrigin
     @PostMapping("/lottos/info/{num}")
     public ResponseDto<?> lottoInfo( @PathVariable Long num,
-                                      @RequestBody UniqueCodeDto uniqueIdDto){
+                                      @RequestBody UniqueCodeDto uniqueIdDto) {
         return lottoService.lottoInfo(num, uniqueIdDto);
-
+    }
 //master
     @CrossOrigin
     @PostMapping("/lottosAutos/{nums}")

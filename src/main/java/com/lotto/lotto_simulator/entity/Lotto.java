@@ -1,5 +1,6 @@
 package com.lotto.lotto_simulator.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;

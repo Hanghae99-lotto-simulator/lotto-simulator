@@ -5,6 +5,8 @@ import lombok.*;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class LottoDto {
 
     private Byte firstNum;

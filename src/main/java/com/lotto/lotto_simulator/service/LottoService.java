@@ -43,7 +43,7 @@ public class LottoService {
         List<Store> stores = storeRepository.searchAll();
 
         // 로또 한 게임
-        List<Integer> lotto;
+        List<Byte> lotto;
 
         // 여러 개의 로또를 모아놓은 리스트
         List<LottoResponseDto> allLottoList = new ArrayList<>();
@@ -53,7 +53,7 @@ public class LottoService {
             //로또 6자리 생성
             lotto = new ArrayList<>();
             do {
-                int num = (int) ((Math.random() * 45) + 1);
+                byte num = (byte) ((Math.random() * 45) + 1);
                 if (!lotto.contains(num)) {
                     lotto.add(num);
                 }
@@ -68,12 +68,12 @@ public class LottoService {
 //            System.out.println("lotto = " + Arrays.toString(lotto));
 
             Lotto game = Lotto.builder()
-                    .firstNum((long) lotto.get(0))
-                    .secondNum((long) lotto.get(1))
-                    .thirdNum((long) lotto.get(2))
-                    .fourthNum((long) lotto.get(3))
-                    .fifthNum((long) lotto.get(4))
-                    .sixthNum((long) lotto.get(5))
+                    .firstNum(lotto.get(0))
+                    .secondNum(lotto.get(1))
+                    .thirdNum(lotto.get(2))
+                    .fourthNum(lotto.get(3))
+                    .fifthNum(lotto.get(4))
+                    .sixthNum(lotto.get(5))
                     .uniqueCode(uuid)
                     .store(stores.get((int) (Math.random() * stores.size())))
                     .build();
@@ -120,7 +120,7 @@ public class LottoService {
         // 중복처리, 에러 처리 여기서 하기 --------------------------------------------------------  --------------
 
         // 로또 번호를 오름차순으로 정렬
-        List<Long> lottoNum = new ArrayList<Long>();
+        List<Byte> lottoNum = new ArrayList<>();
         lottoNum.add(lottoDto.getFirstNum());
         lottoNum.add(lottoDto.getSecondNum());
         lottoNum.add(lottoDto.getThirdNum());
@@ -166,12 +166,12 @@ public class LottoService {
 
         for (LottoDto l : lottos) {
             List<Long> lottoNum = new ArrayList<>();
-            lottoNum.add(l.getFirstNum());
-            lottoNum.add(l.getSecondNum());
-            lottoNum.add(l.getThirdNum());
-            lottoNum.add(l.getFourthNum());
-            lottoNum.add(l.getFifthNum());
-            lottoNum.add(l.getSixthNum());
+            lottoNum.add((long)l.getFirstNum());
+            lottoNum.add((long)l.getSecondNum());
+            lottoNum.add((long)l.getThirdNum());
+            lottoNum.add((long)l.getFourthNum());
+            lottoNum.add((long)l.getFifthNum());
+            lottoNum.add((long)l.getSixthNum());
             lottoList.add(lottoNum);
         }
 
@@ -254,21 +254,22 @@ public class LottoService {
         // 여러 개의 로또를 모아놓은 리스트
         List<LottoResponseDto> allLottoList = new ArrayList<>();
 
+
         for (int i = 0; i < nums; i++) {
 
             //로또 6자리 생성
             lotto = new ArrayList<>();
-            lotto.add(combinationList.get((int) (Math.random() * combinationList.size())));
+            lotto.add(combinationList.get(((int) (Math.random() * combinationList.size()))));
             System.out.println("lotto = " + lotto);
 
 
             Lotto game = Lotto.builder()
-                    .firstNum(lotto.get(0).getFirstNum())
-                    .secondNum(lotto.get(0).getSecondNum())
-                    .thirdNum(lotto.get(0).getThirdNum())
-                    .fourthNum(lotto.get(0).getFourthNum())
-                    .fifthNum(lotto.get(0).getFifthNum())
-                    .sixthNum(lotto.get(0).getSixthNum())
+                    .firstNum((byte)((long)lotto.get(0).getFirstNum()))
+                    .secondNum((byte)((long)lotto.get(0).getSecondNum()))
+                    .thirdNum((byte)((long)lotto.get(0).getThirdNum()))
+                    .fourthNum((byte)((long)lotto.get(0).getFourthNum()))
+                    .fifthNum((byte)((long)lotto.get(0).getFifthNum()))
+                    .sixthNum((byte)((long)lotto.get(0).getSixthNum()))
                     .uniqueCode(uuid)
                     .store(stores.get((int) (Math.random() * stores.size())))
                     .build();

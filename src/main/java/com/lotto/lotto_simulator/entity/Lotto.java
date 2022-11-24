@@ -23,22 +23,22 @@ public class Lotto {
     private String uniqueCode;
 
     @Column(nullable = false)
-    private Long firstNum;
+    private Byte firstNum;
 
     @Column(nullable = false)
-    private Long secondNum;
+    private Byte secondNum;
 
     @Column(nullable = false)
-    private Long thirdNum;
+    private Byte thirdNum;
 
     @Column(nullable = false)
-    private Long fourthNum;
+    private Byte fourthNum;
 
     @Column(nullable = false)
-    private Long fifthNum;
+    private Byte fifthNum;
 
     @Column(nullable = false)
-    private Long sixthNum;
+    private Byte sixthNum;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name="store_id")

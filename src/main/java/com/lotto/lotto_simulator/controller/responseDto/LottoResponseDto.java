@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LottoResponseDto {
-    private Long firstNum;
-    private Long secondNum;
-    private Long thirdNum;
-    private Long fourthNum;
-    private Long fifthNum;
-    private Long sixthNum;
+    private Byte firstNum;
+    private Byte secondNum;
+    private Byte thirdNum;
+    private Byte fourthNum;
+    private Byte fifthNum;
+    private Byte sixthNum;
     private String uniqueCode;
     private Store store;
 }

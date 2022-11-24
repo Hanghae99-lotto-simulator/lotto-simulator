@@ -1,6 +1,7 @@
 package com.lotto.lotto_simulator.service;
 
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
+import com.lotto.lotto_simulator.controller.requestDto.UniqueCodeDto;
 import com.lotto.lotto_simulator.controller.responseDto.LottoResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.RankResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static com.lotto.lotto_simulator.entity.QLotto.lotto;
 
 @Service
 @AllArgsConstructor
@@ -208,12 +211,12 @@ public class LottoService {
             } else if (cnt == 1 && l.contains(round.getBonus())) {
                 secondRank++;
 //                System.out.println(" 2등 l= " +l );
-            } else if (cnt == 2) {
+            } else if (cnt == 1) {
                 thirdRank++;
 //                System.out.println(" 3등 l= " +l );
-            } else if (cnt == 3) {
+            } else if (cnt == 2) {
                 fourthRank++;
-            } else if (cnt == 4) {
+            } else if (cnt == 3) {
                 fifthRank++;
             }
 
@@ -238,6 +241,111 @@ public class LottoService {
         return ResponseDto.success(winningNum);
     }
 
+    //feature/uniqueCodeSearch
+    @Transactional(readOnly = true)
+    public ResponseDto<?> lottoInfo(Long num, UniqueCodeDto uniqueIdDto) {
+
+        // 매개변수로 들어온 유니크 코드를 가지고 있는 Lotto 전부 가져오기
+        List<LottoDto> lottoList = lottoRepository.uniqueCodeSearch(uniqueIdDto.getUniqueCode());
+
+        // num라운드의 당첨번호 정보를 가져온다.
+        Round round = roundRepository.findByRound(num).orElseThrow();
+        List<Long> rounds = new ArrayList<>();
+        rounds.add(round.getNum1());
+        rounds.add(round.getNum2());
+        rounds.add(round.getNum3());
+        rounds.add(round.getNum4());
+        rounds.add(round.getNum5());
+        rounds.add(round.getNum6());
+
+
+        List<List<Long>> singleLottoNum = new ArrayList<>();
+
+        for (LottoDto l:lottoList) {
+            List<Long> lottoNum= new ArrayList<>();
+            lottoNum.add(l.getFirstNum());
+            lottoNum.add(l.getSecondNum());
+            lottoNum.add(l.getThirdNum());
+            lottoNum.add(l.getFourthNum());
+            lottoNum.add(l.getFifthNum());
+            lottoNum.add(l.getSixthNum());
+            singleLottoNum.add(lottoNum);
+        }
+
+        int firstRank = 0;
+        int secondRank = 0;
+        int thirdRank = 0;
+        int fourthRank = 0;
+        int fifthRank = 0;
+
+        // 등수와 당첨번호를 모아넣는 Map
+        HashMap<Integer, List<List<Long>>> winLottoMap = new HashMap<>();
+        List<List<Long>> firstList = new ArrayList<>();
+        List<List<Long>> secondList = new ArrayList<>();
+        List<List<Long>> thirdList = new ArrayList<>();
+        List<List<Long>> fourthList = new ArrayList<>();
+        List<List<Long>> fifthList = new ArrayList<>();
+
+        for (List<Long> l:singleLottoNum) {
+
+            HashMap<Long,Integer> map = new HashMap<>();
+            for(int i= 0 ; i < rounds.size(); i++) {
+                map.put(rounds.get(i), map.getOrDefault(rounds.get(i), 0) +1);
+            }
+            for(int i = 0; i<l.size(); i++){
+                map.put(l.get(i), map.getOrDefault(l.get(i), 0) -1);
+            }
+
+
+            int cnt = 0;
+            for(Long key : map.keySet()) {
+                if(map.get(key) > 0) {
+                    cnt++;
+                }
+            }
+            if(cnt == 0) {
+                firstRank++;
+                firstList.add(l);
+            }
+            else if(cnt == 1 && l.contains(round.getBonus())) {
+                secondRank++;
+                secondList.add(l);
+            }
+            else if(cnt == 1){
+                thirdRank++;
+                thirdList.add(l);
+            }
+            else if(cnt == 2){
+                fourthRank++;
+                fourthList.add(l);
+            }
+            else if(cnt == 3){
+                fifthRank++;
+                fifthList.add(l);
+                System.out.println("5등 = " + l);
+            }
+
+        }
+
+        winLottoMap.put(1, firstList);
+        winLottoMap.put(2, secondList);
+        winLottoMap.put(3, thirdList);
+        winLottoMap.put(4, fourthList);
+        winLottoMap.put(5, fifthList);
+
+//        System.out.println(winLottoMap);
+
+//        RankResponseDto rankResponseDto = RankResponseDto.builder()
+//                .firstRank(firstRank)
+//                .secondRank(secondRank)
+//                .thirdRank(thirdRank)
+//                .fourthRank(fourthRank)
+//                .fifthRank(fifthRank)
+//                .build();
+
+        return ResponseDto.success(winLottoMap);
+    
+    // master
     @Transactional
     public ResponseDto<?> lottoCombinationCreate(Long nums) {
         String uuid = UUID.randomUUID().toString();

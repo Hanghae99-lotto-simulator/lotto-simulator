@@ -1,10 +1,7 @@
 package com.lotto.lotto_simulator.controller.requestDto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Data
 @NoArgsConstructor

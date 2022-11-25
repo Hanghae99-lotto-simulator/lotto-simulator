@@ -461,7 +461,7 @@ public class LottoService {
                     .id(round.getId())
                     .Count(roundCount)
                     .BonusNum(round.getBonus())
-                    .data(round.getDate())
+                    .date(round.getDate())
                     .RoundArray(rounds)
                     .firstRank(firstRank)
                     .secondRank(secondRank)

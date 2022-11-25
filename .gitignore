@@ -35,3 +35,11 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### 설정파일
+application.yml
+application-dev.yml
+application-prod.yml
+
+tableInit.sql

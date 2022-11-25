@@ -15,7 +15,7 @@ import java.util.List;
 public class LankRoundDto {
     private  Long id;
     private Long Count;
-    private LocalDateTime data;
+    private LocalDateTime date;
     private List<Byte> RoundArray;
     private Byte BonusNum;
     private Integer firstRank;

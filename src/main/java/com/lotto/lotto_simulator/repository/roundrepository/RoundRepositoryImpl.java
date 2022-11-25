@@ -1,7 +1,6 @@
 package com.lotto.lotto_simulator.repository.roundrepository;
 
 import com.lotto.lotto_simulator.entity.Round;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.lotto.lotto_simulator.entity.QRound.*;
-import static org.springframework.data.querydsl.binding.QuerydslPredicateBuilder.isEmpty;
+
 
 @Repository
 @RequiredArgsConstructor
@@ -29,6 +28,14 @@ public class RoundRepositoryImpl implements RoundRepositoryCustom{
                 .where(round.id.eq(num))
                 .fetchOne());
     }
+//카운트 쿼리
+    @Override
+    public Long countQuery() {
+        return queryFactory
+                .select(round.count())
+                .from(round)
+                .fetchOne();
+    }
 
     @Override
     public Page<Round> pageable(Pageable pageable) {
@@ -37,9 +44,11 @@ public class RoundRepositoryImpl implements RoundRepositoryCustom{
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
         JPAQuery<Long> countQuery=queryFactory
                 .select(round.count())
                 .from(round);
+
         return PageableExecutionUtils.getPage(roundList, pageable,
                 countQuery::fetchOne);
     }

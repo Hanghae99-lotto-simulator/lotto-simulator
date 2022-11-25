@@ -29,7 +29,7 @@ public class LottoController {
 
     // {num} 회차일 때 더미데이터 중 1등부터 5등까지 각각 몇명인지 반환
     @CrossOrigin
-    @PostMapping("/lottoWins/{num}")
+    @GetMapping("/lottoWins/{num}")
     public ResponseDto<?> lottoWin(@PathVariable Long num){
         return lottoService.lottoWins(num);
     }
@@ -42,10 +42,16 @@ public class LottoController {
 
 //feature/uniqueCodeSearch
     @CrossOrigin
-    @PostMapping("/lottos/info/{num}")
+    @GetMapping("/lottos/info/{num}")
     public ResponseDto<?> lottoInfo( @PathVariable Long num,
                                       @RequestBody UniqueCodeDto uniqueIdDto) {
         return lottoService.lottoInfo(num, uniqueIdDto);
+    }
+    //당첨 번호 추첨
+    @CrossOrigin
+    @GetMapping("/winningNums/{num}")
+    public ResponseDto<?> lottoWins(@PathVariable Long num){
+        return lottoService.winningNums(num);
     }
 //master
     @CrossOrigin
@@ -53,11 +59,5 @@ public class LottoController {
     public ResponseDto<?> lottoAutoss(@PathVariable Long nums){
         return lottoService.lottoCombinationCreate(nums);
     }
-//    //로또 더미데이터 여러개(같은 UUID, 지점)
-//    @CrossOrigin
-//    @PostMapping("/lottoAutosName/{num}")
-//    public ResponseDto<?> lottoAutosName(@PathVariable Long num){
-//        return lottoService.lottoCreatesName(num);
-//    }
 
 }

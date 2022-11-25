@@ -12,6 +12,7 @@ import com.lotto.lotto_simulator.repository.lottocombinationrepository.LottoComb
 import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
 import com.lotto.lotto_simulator.repository.roundrepository.RoundRepository;
 import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
+import com.querydsl.jpa.impl.JPAQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -381,57 +382,91 @@ public class LottoService {
             return ResponseDto.success(allLottoList); // 결과값이 보기 불편하게 나옴
 
         }
+        //페이지 기능 뺀 로또 등수
+        @Transactional
+        public ResponseDto<?> winningNums(Long num) {
+            Round round = roundRepository.findByRound(num).orElseThrow();
+            Long roundCount = roundRepository.countQuery();
 
+            //라운드 로또  추첨 번호
+            List<Byte> rounds = new ArrayList<>();
+            rounds.add(round.getNum1());
+            rounds.add(round.getNum2());
+            rounds.add(round.getNum3());
+            rounds.add(round.getNum4());
+            rounds.add(round.getNum5());
+            rounds.add(round.getNum6());
+
+
+            System.out.println("rounds = " + Arrays.toString(rounds.toArray()));
+            List<LottoDto> lottos = lottoRepository.search();
+            List<List<Byte>> lottoList = new ArrayList<>();
+
+            for (LottoDto l : lottos) {
+                List<Byte> lottoNum = new ArrayList<>();
+                lottoNum.add(l.getFirstNum());
+                lottoNum.add(l.getSecondNum());
+                lottoNum.add(l.getThirdNum());
+                lottoNum.add(l.getFourthNum());
+                lottoNum.add(l.getFifthNum());
+                lottoNum.add(l.getSixthNum());
+                lottoList.add(lottoNum);
+            }
+
+            //등수
+            int firstRank = 0;
+            int secondRank = 0;
+            int thirdRank = 0;
+            int fourthRank = 0;
+            int fifthRank = 0;
+
+            int lottoCnt = 0;
+
+            for (List<Byte> l : lottoList) {
+
+                HashMap<Byte, Integer> map = new HashMap<>();
+                for (Byte value : rounds) {
+                    map.put(value, map.getOrDefault(value, 0) + 1);
+                }
+                for (Byte aByte : l) {
+                    map.put(aByte, map.getOrDefault(aByte, 0) - 1);
+                }
+
+
+                int cnt = 0;
+                for (Byte key : map.keySet()) {
+                    if (map.get(key) > 0) {
+                        cnt++;
+                    }
+                }
+                if (cnt == 0) {
+                    firstRank++;
+                    System.out.println(lottoCnt);
+//                myMap.put(lottos.get(lottoCnt).getStore().getStoreName(), myMap.getOrDefault(lottos.get(lottoCnt).getStore().getStoreName(), 0) + 1);
+                } else if (cnt == 1 && l.contains(round.getBonus())) {
+                    secondRank++;
+//                System.out.println(" 2등 l= " +l );
+                } else if (cnt == 1) {
+                    thirdRank++;
+//                System.out.println(" 3등 l= " +l );
+                } else if (cnt == 2) {
+                    fourthRank++;
+                } else if (cnt == 3) {
+                    fifthRank++;
+                }
+
+                lottoCnt++;
+            }
+            LankRoundDto builder = LankRoundDto.builder()
+                    .Count(roundCount)
+                    .BonusNum(round.getBonus())
+                    .RoundArray(rounds)
+                    .firstRank(firstRank)
+                    .secondRank(secondRank)
+                    .thirdRank(thirdRank)
+                    .fourthRank(fourthRank)
+                    .fifthRank(fifthRank)
+                    .build();
+            return ResponseDto.success(builder);
+        }
     }
-
-
-
-//    public ResponseDto<?> lottoCreatesName(Long value) {
-//        Store store = storeRepository.findById((long) (Math.random() * (storeRepository.count()))).orElse(null);
-//        List<Lotto> lottoList = new ArrayList<>();
-//        String uuid = UUID.randomUUID().toString();
-//
-//        for(int i=1; i <= value; i++) {
-//
-//            ArrayList<Long> num = new ArrayList<>();
-//
-//            do {
-//                long rndNum;
-//                rndNum = ((long) (Math.random() * 45)) + 1;
-//                if(!num.contains(rndNum)) {
-//                    num.add(rndNum);
-//                }
-//            }while (num.size() < 6);
-//
-//            Collections.sort(num);
-//
-//            Lotto lotto = Lotto.builder()
-//                    .firstNum(num.get(0))
-//                    .secondNum(num.get(1))
-//                    .thirdNum(num.get(2))
-//                    .fourthNum(num.get(3))
-//                    .fifthNum(num.get(4))
-//                    .sixthNum(num.get(5))
-//                    .uniqueCode(uuid)
-//                    .store(store)
-//                    .build();
-//
-//            lottoList.add(lotto);
-//
-//
-//        }
-//
-//        lottoRepository.saveAll(lottoList);
-//
-//        return ResponseDto.success("success");
-//    }
-//}
-//        rounds.add(Round.builder()
-//                .id(round.getId())
-//                .num1(round.getNum1())
-//                .num2(round.getNum2())
-//                .num3(round.getNum3())
-//                .num4(round.getNum4())
-//                .num5(round.getNum5())
-//                .num6(round.getNum6())
-//                .build());

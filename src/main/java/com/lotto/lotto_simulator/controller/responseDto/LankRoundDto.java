@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -14,6 +15,7 @@ import java.util.List;
 public class LankRoundDto {
     private  Long id;
     private Long Count;
+    private LocalDateTime data;
     private List<Byte> RoundArray;
     private Byte BonusNum;
     private Integer firstRank;

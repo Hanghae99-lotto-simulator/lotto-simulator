@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LankRoundDto {
+    private  Long id;
     private Long Count;
     private List<Byte> RoundArray;
     private Byte BonusNum;

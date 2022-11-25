@@ -458,6 +458,7 @@ public class LottoService {
                 lottoCnt++;
             }
             LankRoundDto builder = LankRoundDto.builder()
+                    .id(round.getId())
                     .Count(roundCount)
                     .BonusNum(round.getBonus())
                     .RoundArray(rounds)

@@ -22,29 +22,29 @@ public class Round {
     private Long id;
 
     @Column(nullable = false)
-    private Long bonus;
+    private Byte bonus;
 
     // String? Date? 굳이 Date일 필요가 있나?
     @Column(nullable = false)
     private LocalDateTime date;
 
     @Column(nullable = false)
-    private Long num1;
+    private Byte num1;
 
     @Column(nullable = false)
-    private Long num2;
+    private Byte num2;
 
     @Column(nullable = false)
-    private Long num3;
+    private Byte num3;
 
     @Column(nullable = false)
-    private Long num4;
+    private Byte num4;
 
     @Column(nullable = false)
-    private Long num5;
+    private Byte num5;
 
     @Column(nullable = false)
-    private Long num6;
+    private Byte num6;
 
 
 

@@ -134,7 +134,7 @@ public class LottoService {
         Round round = roundRepository.findByRound(num).orElseThrow();
         System.out.println("round = " + round);
         //라운드 로또  추첨 번호
-        List<Long> rounds = new ArrayList<>();
+        List<Byte> rounds = new ArrayList<>();
         rounds.add(round.getNum1());
         rounds.add(round.getNum2());
         rounds.add(round.getNum3());
@@ -145,16 +145,16 @@ public class LottoService {
 
         System.out.println("rounds = " + Arrays.toString(rounds.toArray()));
         List<LottoDto> lottos = lottoRepository.search();
-        List<List<Long>> lottoList = new ArrayList<>();
+        List<List<Byte>> lottoList = new ArrayList<>();
 
         for (LottoDto l : lottos) {
-            List<Long> lottoNum = new ArrayList<>();
-            lottoNum.add((long)l.getFirstNum());
-            lottoNum.add((long)l.getSecondNum());
-            lottoNum.add((long)l.getThirdNum());
-            lottoNum.add((long)l.getFourthNum());
-            lottoNum.add((long)l.getFifthNum());
-            lottoNum.add((long)l.getSixthNum());
+            List<Byte> lottoNum = new ArrayList<>();
+            lottoNum.add(l.getFirstNum());
+            lottoNum.add(l.getSecondNum());
+            lottoNum.add(l.getThirdNum());
+            lottoNum.add(l.getFourthNum());
+            lottoNum.add(l.getFifthNum());
+            lottoNum.add(l.getSixthNum());
             lottoList.add(lottoNum);
         }
 
@@ -167,19 +167,19 @@ public class LottoService {
 
         int lottoCnt = 0;
 
-        for (List<Long> l : lottoList) {
+        for (List<Byte> l : lottoList) {
 
-            HashMap<Long, Integer> map = new HashMap<>();
-            for (int i = 0; i < rounds.size(); i++) {
-                map.put(rounds.get(i), map.getOrDefault(rounds.get(i), 0) + 1);
+            HashMap<Byte, Integer> map = new HashMap<>();
+            for (Byte value : rounds) {
+                map.put(value, map.getOrDefault(value, 0) + 1);
             }
-            for (int i = 0; i < l.size(); i++) {
-                map.put(l.get(i), map.getOrDefault(l.get(i), 0) - 1);
+            for (Byte aByte : l) {
+                map.put(aByte, map.getOrDefault(aByte, 0) - 1);
             }
 
 
             int cnt = 0;
-            for (Long key : map.keySet()) {
+            for (Byte key : map.keySet()) {
                 if (map.get(key) > 0) {
                     cnt++;
                 }
@@ -230,7 +230,7 @@ public class LottoService {
 
         // num라운드의 당첨번호 정보를 가져온다.
         Round round = roundRepository.findByRound(num).orElseThrow();
-        List<Long> rounds = new ArrayList<>();
+        List<Byte> rounds = new ArrayList<>();
         rounds.add(round.getNum1());
         rounds.add(round.getNum2());
         rounds.add(round.getNum3());
@@ -239,16 +239,16 @@ public class LottoService {
         rounds.add(round.getNum6());
 
 
-        List<List<Long>> singleLottoNum = new ArrayList<>();
+        List<List<Byte>> singleLottoNum = new ArrayList<>();
 
         for (LottoDto l : lottoList) {
-            List<Long> lottoNum = new ArrayList<>();
-            lottoNum.add(Long.valueOf(l.getFirstNum()));
-            lottoNum.add(Long.valueOf(l.getSecondNum()));
-            lottoNum.add(Long.valueOf(l.getThirdNum()));
-            lottoNum.add(Long.valueOf(l.getFourthNum()));
-            lottoNum.add(Long.valueOf(l.getFifthNum()));
-            lottoNum.add(Long.valueOf(l.getSixthNum()));
+            List<Byte> lottoNum = new ArrayList<>();
+            lottoNum.add(l.getFirstNum());
+            lottoNum.add(l.getSecondNum());
+            lottoNum.add(l.getThirdNum());
+            lottoNum.add(l.getFourthNum());
+            lottoNum.add(l.getFifthNum());
+            lottoNum.add(l.getSixthNum());
             singleLottoNum.add(lottoNum);
         }
 
@@ -259,26 +259,26 @@ public class LottoService {
         int fifthRank = 0;
 
         // 등수와 당첨번호를 모아넣는 Map
-        HashMap<Integer, List<List<Long>>> winLottoMap = new HashMap<>();
-        List<List<Long>> firstList = new ArrayList<>();
-        List<List<Long>> secondList = new ArrayList<>();
-        List<List<Long>> thirdList = new ArrayList<>();
-        List<List<Long>> fourthList = new ArrayList<>();
-        List<List<Long>> fifthList = new ArrayList<>();
+        HashMap<Integer, List<List<Byte>>> winLottoMap = new HashMap<>();
+        List<List<Byte>> firstList = new ArrayList<>();
+        List<List<Byte>> secondList = new ArrayList<>();
+        List<List<Byte>> thirdList = new ArrayList<>();
+        List<List<Byte>> fourthList = new ArrayList<>();
+        List<List<Byte>> fifthList = new ArrayList<>();
 
-        for (List<Long> l : singleLottoNum) {
+        for (List<Byte> l : singleLottoNum) {
 
-            HashMap<Long, Integer> map = new HashMap<>();
-            for (int i = 0; i < rounds.size(); i++) {
-                map.put(rounds.get(i), map.getOrDefault(rounds.get(i), 0) + 1);
+            HashMap<Byte, Integer> map = new HashMap<>();
+            for (Byte value : rounds) {
+                map.put(value, map.getOrDefault(value, 0) + 1);
             }
-            for (int i = 0; i < l.size(); i++) {
-                map.put(l.get(i), map.getOrDefault(l.get(i), 0) - 1);
+            for (Byte aByte : l) {
+                map.put(aByte, map.getOrDefault(aByte, 0) - 1);
             }
 
 
             int cnt = 0;
-            for (Long key : map.keySet()) {
+            for (Byte key : map.keySet()) {
                 if (map.get(key) > 0) {
                     cnt++;
                 }
@@ -349,12 +349,12 @@ public class LottoService {
 
 
                 Lotto game = Lotto.builder()
-                        .firstNum((byte) ((long) lotto.get(0).getFirstNum()))
-                        .secondNum((byte) ((long) lotto.get(0).getSecondNum()))
-                        .thirdNum((byte) ((long) lotto.get(0).getThirdNum()))
-                        .fourthNum((byte) ((long) lotto.get(0).getFourthNum()))
-                        .fifthNum((byte) ((long) lotto.get(0).getFifthNum()))
-                        .sixthNum((byte) ((long) lotto.get(0).getSixthNum()))
+                        .firstNum(lotto.get(0).getFirstNum())
+                        .secondNum(lotto.get(0).getSecondNum())
+                        .thirdNum(lotto.get(0).getThirdNum())
+                        .fourthNum(lotto.get(0).getFourthNum())
+                        .fifthNum(lotto.get(0).getFifthNum())
+                        .sixthNum(lotto.get(0).getSixthNum())
                         .uniqueCode(uuid)
                         .store(stores.get((int) (Math.random() * stores.size())))
                         .build();

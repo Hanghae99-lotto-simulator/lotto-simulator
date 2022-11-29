@@ -6,12 +6,13 @@ import javax.persistence.*;
 
 @Builder
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoundWinners {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

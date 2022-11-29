@@ -1,0 +1,123 @@
+package com.lotto.lotto_simulator.service;
+
+import com.lotto.lotto_simulator.controller.requestDto.LottoCombinationDto;
+import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
+import com.lotto.lotto_simulator.controller.responseDto.LankRoundDto;
+import com.lotto.lotto_simulator.controller.responseDto.LottosResponseDto;
+import com.lotto.lotto_simulator.controller.responseDto.RankResponseDto;
+import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
+import com.lotto.lotto_simulator.entity.Lotto;
+import com.lotto.lotto_simulator.entity.Round;
+import com.lotto.lotto_simulator.entity.Store;
+import com.lotto.lotto_simulator.repository.lottocombinationrepository.LottoCombinationRepository;
+import com.lotto.lotto_simulator.repository.lottorepository.JdbcLottoRepository;
+import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
+import com.lotto.lotto_simulator.repository.roundrepository.RoundRepository;
+import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+
+@Service
+@AllArgsConstructor
+public class RoundService {
+    private final LottoRepository lottoRepository;
+    private final StoreRepository storeRepository;
+    private final RoundRepository roundRepository;
+    private final LottoCombinationRepository lottoCombinationRepository;
+    private final JdbcLottoRepository jdbcLottoRepository;
+
+    //페이지 기능 뺀 로또 등수
+    @Transactional
+    public ResponseDto<?> winningNums(Long num) {
+        Round round = roundRepository.findByRound(num).orElseThrow();
+        Long roundCount = roundRepository.countQuery();
+
+        //라운드 로또  추첨 번호
+        List<Byte> rounds = new ArrayList<>();
+        rounds.add(round.getNum1());
+        rounds.add(round.getNum2());
+        rounds.add(round.getNum3());
+        rounds.add(round.getNum4());
+        rounds.add(round.getNum5());
+        rounds.add(round.getNum6());
+
+
+        System.out.println("rounds = " + Arrays.toString(rounds.toArray()));
+        List<LottoDto> lottos = lottoRepository.search();
+        List<List<Byte>> lottoList = new ArrayList<>();
+
+        for (LottoDto l : lottos) {
+            List<Byte> lottoNum = new ArrayList<>();
+            lottoNum.add(l.getFirstNum());
+            lottoNum.add(l.getSecondNum());
+            lottoNum.add(l.getThirdNum());
+            lottoNum.add(l.getFourthNum());
+            lottoNum.add(l.getFifthNum());
+            lottoNum.add(l.getSixthNum());
+            lottoList.add(lottoNum);
+        }
+
+        //등수
+        int firstRank = 0;
+        int secondRank = 0;
+        int thirdRank = 0;
+        int fourthRank = 0;
+        int fifthRank = 0;
+
+        int lottoCnt = 0;
+
+        for (List<Byte> l : lottoList) {
+
+            HashMap<Byte, Integer> map = new HashMap<>();
+            for (Byte value : rounds) {
+                map.put(value, map.getOrDefault(value, 0) + 1);
+            }
+            for (Byte aByte : l) {
+                map.put(aByte, map.getOrDefault(aByte, 0) - 1);
+            }
+
+
+            int cnt = 0;
+            for (Byte key : map.keySet()) {
+                if (map.get(key) > 0) {
+                    cnt++;
+                }
+            }
+            if (cnt == 0) {
+                firstRank++;
+                System.out.println(lottoCnt);
+//                myMap.put(lottos.get(lottoCnt).getStore().getStoreName(), myMap.getOrDefault(lottos.get(lottoCnt).getStore().getStoreName(), 0) + 1);
+            } else if (cnt == 1 && l.contains(round.getBonus())) {
+                secondRank++;
+//                System.out.println(" 2등 l= " +l );
+            } else if (cnt == 1) {
+                thirdRank++;
+//                System.out.println(" 3등 l= " +l );
+            } else if (cnt == 2) {
+                fourthRank++;
+            } else if (cnt == 3) {
+                fifthRank++;
+            }
+
+            lottoCnt++;
+        }
+        LankRoundDto builder = LankRoundDto.builder()
+                .id(round.getId())
+                .Count(roundCount)
+                .BonusNum(round.getBonus())
+                .date(round.getDate())
+                .RoundArray(rounds)
+                .firstRank(firstRank)
+                .secondRank(secondRank)
+                .thirdRank(thirdRank)
+                .fourthRank(fourthRank)
+                .fifthRank(fifthRank)
+                .build();
+        return ResponseDto.success(builder);
+    }
+
+
+}

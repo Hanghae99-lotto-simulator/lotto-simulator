@@ -224,6 +224,5 @@ public class PurchaseService {
 
         // 여러 개의 로또를 모아놓은 allLottoList 반환
         return ResponseDto.success(allLottoList); // 결과값이 보기 불편하게 나옴
-
     }
 }

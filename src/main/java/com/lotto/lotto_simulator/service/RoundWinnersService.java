@@ -1,8 +1,8 @@
 package com.lotto.lotto_simulator.service;
 
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
+import com.lotto.lotto_simulator.controller.responseDto.LankRoundDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
-import com.lotto.lotto_simulator.controller.responseDto.RoundWinnersResponseDto;
 import com.lotto.lotto_simulator.entity.Round;
 import com.lotto.lotto_simulator.entity.RoundWinners;
 import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
@@ -28,29 +28,11 @@ public class RoundWinnersService {
     @Transactional
     public ResponseDto<?> lottoWinsV2(Long num) {
 
-        RoundWinnersResponseDto roundWinnersResponseDto;
+        LankRoundDto lankRoundDto;
         long previousCount = 0;
         RoundWinners roundWinners = roundWinnersRepository.findById(num).orElse(null);
-
-        if(roundWinners != null){
-            if(roundWinners.getLottoCnt() == lottoRepository.count()){
-                roundWinnersResponseDto = RoundWinnersResponseDto.builder()
-                        .firstRank(roundWinners.getFirstRank())
-                        .secondRank(roundWinners.getSecondRank())
-                        .thirdRank(roundWinners.getThirdRank())
-                        .fourthRank(roundWinners.getFourthRank())
-                        .fifthRank(roundWinners.getFifthRank())
-                        .lottoCnt(roundWinners.getLottoCnt())
-                        .build();
-                return ResponseDto.success(roundWinnersResponseDto);
-            }
-            previousCount = roundWinners.getLottoCnt();
-        }
-
-
         Round round = roundRepository.findByRound(num).orElseThrow();
 
-        //라운드 로또  추첨 번호
         List<Byte> rounds = new ArrayList<>();
         rounds.add(round.getNum1());
         rounds.add(round.getNum2());
@@ -58,6 +40,30 @@ public class RoundWinnersService {
         rounds.add(round.getNum4());
         rounds.add(round.getNum5());
         rounds.add(round.getNum6());
+
+        if(roundWinners != null){
+            if(roundWinners.getLottoCnt() == lottoRepository.count()){
+                lankRoundDto = LankRoundDto.builder()
+                        .id(round.getId())
+                        .Count(roundWinners.getLottoCnt())
+                        .BonusNum(round.getBonus())
+                        .date(round.getDate())
+                        .RoundArray(rounds)
+                        .firstRank((int)(long)(roundWinners.getFirstRank()))
+                        .secondRank((int)(long)(roundWinners.getSecondRank()))
+                        .thirdRank((int)(long)(roundWinners.getThirdRank()))
+                        .fourthRank((int)(long)(roundWinners.getFourthRank()))
+                        .fifthRank((int)(long)(roundWinners.getFifthRank()))
+                        .build();
+                return ResponseDto.success(lankRoundDto);
+            }
+            previousCount = roundWinners.getLottoCnt();
+        }
+
+
+
+        //라운드 로또  추첨 번호
+
 
         List<LottoDto> lottos = lottoRepository.improvedSearch(previousCount);
         List<List<Byte>> lottoList = new ArrayList<>();
@@ -124,14 +130,6 @@ public class RoundWinnersService {
             fifthRank += roundWinners.getFifthRank();
         }
 
-        roundWinnersResponseDto = RoundWinnersResponseDto.builder()
-                .firstRank(firstRank)
-                .secondRank(secondRank)
-                .thirdRank(thirdRank)
-                .fourthRank(fourthRank)
-                .fifthRank(fifthRank)
-                .lottoCnt(lottoCnt)
-                .build();
 
         roundWinners = RoundWinners.builder()
                 .id(num)
@@ -143,9 +141,22 @@ public class RoundWinnersService {
                 .lottoCnt(lottoCnt)
                 .build();
 
+        lankRoundDto = LankRoundDto.builder()
+                .id(round.getId())
+                .Count(lottoCnt)
+                .BonusNum(round.getBonus())
+                .date(round.getDate())
+                .RoundArray(rounds)
+                .firstRank((int)firstRank)
+                .secondRank((int)secondRank)
+                .thirdRank((int)thirdRank)
+                .fourthRank((int)fourthRank)
+                .fifthRank((int)fifthRank)
+                .build();
+
         roundWinnersRepository.save(roundWinners);
 
-        return ResponseDto.success(roundWinnersResponseDto);
+        return ResponseDto.success(lankRoundDto);
 
     }
 }

@@ -27,7 +27,6 @@ import java.util.UUID;
 public class PurchaseService {
     private final LottoRepository lottoRepository;
     private final StoreRepository storeRepository;
-    private final RoundRepository roundRepository;
     private final LottoCombinationRepository lottoCombinationRepository;
     private final JdbcLottoRepository jdbcLottoRepository;
 
@@ -91,7 +90,7 @@ public class PurchaseService {
                 .lottoArray(lottoList)
                 .uniqueCode(uniqueCode)
                 .build();
-        return ResponseDto.success("success");
+        return ResponseDto.success(lottosResponseDto);
     }
     
     // 수동으로 로또 번호 생성

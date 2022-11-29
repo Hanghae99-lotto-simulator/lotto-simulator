@@ -123,6 +123,7 @@ public class RoundService {
 
         LankRoundDto lankRoundDto;
         long previousCount = 0;
+        Long roundCount = roundRepository.countQuery();
         RoundWinners roundWinners = roundWinnersRepository.findById(num).orElse(null);
         Round round = roundRepository.findByRound(num).orElseThrow();
 
@@ -138,7 +139,7 @@ public class RoundService {
             if(roundWinners.getLottoCnt() == lottoRepository.count()){
                 lankRoundDto = LankRoundDto.builder()
                         .id(round.getId())
-                        .Count(roundWinners.getLottoCnt())
+                        .Count(roundCount)
                         .BonusNum(round.getBonus())
                         .date(round.getDate())
                         .RoundArray(rounds)
@@ -152,8 +153,6 @@ public class RoundService {
             }
             previousCount = roundWinners.getLottoCnt();
         }
-
-
 
         //라운드 로또  추첨 번호
 
@@ -236,7 +235,7 @@ public class RoundService {
 
         lankRoundDto = LankRoundDto.builder()
                 .id(round.getId())
-                .Count(lottoCnt)
+                .Count(roundCount)
                 .BonusNum(round.getBonus())
                 .date(round.getDate())
                 .RoundArray(rounds)

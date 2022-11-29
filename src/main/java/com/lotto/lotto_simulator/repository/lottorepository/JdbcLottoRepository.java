@@ -1,7 +1,5 @@
-package com.lotto.lotto_simulator.repository.lottocombinationrepository;
+package com.lotto.lotto_simulator.repository.lottorepository;
 
-import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
-import com.lotto.lotto_simulator.controller.responseDto.LottoResponseDto;
 import com.lotto.lotto_simulator.entity.Lotto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -14,7 +12,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class JdbcLottoCombinationRepository {
+public class JdbcLottoRepository {
     private final JdbcTemplate jdbcTemplate;
 
         public void batchInsertLottos(List<Lotto> lottos) {

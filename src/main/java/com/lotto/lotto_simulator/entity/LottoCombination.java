@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="lotto",indexes = {
+@Table(name="LottoCombination",indexes = {
         @Index(name = "lotto_num_idx"
                 , columnList = "firstNum, secondNum, thirdNum, fourthNum, fifthNum, sixthNum")
 })

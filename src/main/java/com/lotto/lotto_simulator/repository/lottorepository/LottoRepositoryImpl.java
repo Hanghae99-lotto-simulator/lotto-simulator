@@ -46,4 +46,20 @@ public class LottoRepositoryImpl implements LottoRepositoryCustom {
                 .where(lotto.uniqueCode.eq(uniqueCode))
                 .fetch();
     }
+
+    @Override
+    public List<LottoDto> improvedSearch(Long previousCount) {
+        return  queryFactory
+                .select(new QLottoDto(
+                        lotto.firstNum,
+                        lotto.secondNum,
+                        lotto.thirdNum,
+                        lotto.fourthNum,
+                        lotto.fifthNum,
+                        lotto.sixthNum
+                ))
+                .from(lotto)
+                .where(lotto.lotto_id.gt(previousCount))
+                .fetch();
+    }
 }

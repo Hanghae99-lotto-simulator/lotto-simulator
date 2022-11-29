@@ -130,6 +130,7 @@ public class RoundWinnersService {
                 .thirdRank(thirdRank)
                 .fourthRank(fourthRank)
                 .fifthRank(fifthRank)
+                .lottoCnt(lottoCnt)
                 .build();
 
         roundWinners = RoundWinners.builder()

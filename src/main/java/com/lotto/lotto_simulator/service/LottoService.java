@@ -44,6 +44,9 @@ public class LottoService {
         // 매개변수로 들어온 유니크 코드를 가지고 있는 Lotto 전부 가져오기
         List<LottoDto> lottoList = lottoRepository.uniqueCodeSearch(uniqueCode);
 
+        // 매개변수로 들어온 유니크코드를 가지고 있는 로또 데이터가 몇 개 인지
+        int totalCnt = lottoList.size();
+
         // num라운드의 당첨번호 정보를 가져온다.
         Round round = roundRepository.findByRound(num).orElseThrow();
         List<Byte> rounds = new ArrayList<>();
@@ -118,6 +121,7 @@ public class LottoService {
                         .thirdList(thirdList)
                         .fourthRank((long) fourthRank)
                         .fifthRank((long) fifthRank)
+                        .totalCnt(totalCnt)
                         .build());
         }
     }

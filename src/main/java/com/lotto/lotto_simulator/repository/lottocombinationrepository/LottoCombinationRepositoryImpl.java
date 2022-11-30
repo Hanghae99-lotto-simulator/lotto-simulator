@@ -5,7 +5,6 @@ import com.lotto.lotto_simulator.controller.requestDto.QLottoCombinationDto;
 import com.lotto.lotto_simulator.entity.LottoCombination;
 import com.lotto.lotto_simulator.entity.QLotto;
 import com.lotto.lotto_simulator.entity.QLottoCombination;
-import com.lotto.lotto_simulator.entity.QLottoSubSelect;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;

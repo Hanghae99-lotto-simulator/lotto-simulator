@@ -17,4 +17,5 @@ public class GambleDto {
     private List<List<Byte>> thirdList = new ArrayList<>();
     private Long fourthRank;
     private Long fifthRank;
+    private Integer totalCnt;
 }

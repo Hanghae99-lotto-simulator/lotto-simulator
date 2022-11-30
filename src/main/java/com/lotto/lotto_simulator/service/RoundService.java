@@ -17,9 +17,17 @@ import com.lotto.lotto_simulator.repository.roundrepository.RoundRepository;
 import com.lotto.lotto_simulator.repository.roundwinnersrepository.RoundWinnersRepository;
 import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 @Service
@@ -251,4 +259,58 @@ public class RoundService {
         return ResponseDto.success(lankRoundDto);
     }
 
+    @Transactional
+    public ResponseDto<?> newestWinningNums(Long num) {
+
+        //String result = " ";
+        StringBuilder result = new StringBuilder();
+
+        try{
+
+            String apiUrl = "https://www.dhlottery.co.kr/common.do?" +
+                    "method=getLottoNumber" +
+                    "&drwNo=" + num;
+
+            URL url = new URL(apiUrl);
+
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+
+            BufferedReader br;
+
+            br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+            String returnLine;
+
+            while((returnLine = br.readLine()) != null){
+                result.append(returnLine);
+            }
+
+            urlConnection.disconnect();
+
+            String str = result.toString().replace("\"", "");
+
+
+            return ResponseDto.success(str);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseDto.success("success");
+    }
 }
+
+//HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+//            urlConnection.connect();
+//            BufferedInputStream bufferedInputStream = new BufferedInputStream(urlConnection.getInputStream());
+//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bufferedInputStream, "UTF-8"));
+//            String returnLine;
+//            while((returnLine = bufferedReader.readLine()) != null)
+//                result.append(returnLine);
+
+
+//BufferedReader bf;
+//            bf = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+//            result = bf.readLine();
+//
+//            JSONParser jsonParser = new JSONParser();

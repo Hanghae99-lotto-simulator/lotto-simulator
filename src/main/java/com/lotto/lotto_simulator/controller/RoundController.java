@@ -38,4 +38,11 @@ public class RoundController {
     public ResponseDto<?> winningNum(@PageableDefault(page = 0, size = 1) Pageable pageable) {
         return lottoService.winningNum(pageable);
     }
+
+    // 새로운 회차 당첨번호 가져오기
+    @CrossOrigin
+    @PostMapping("/newest-winningNums/{num}")
+    public ResponseDto<?> newestWinningNum(@PathVariable Long num) {
+        return roundService.newestWinningNums(num);
+    }
 }

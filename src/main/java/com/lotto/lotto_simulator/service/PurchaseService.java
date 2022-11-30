@@ -133,7 +133,7 @@ public class PurchaseService {
 //            List<LottoCombination> combinationList = lottoCombinationRepository.searchAll();
         String uniqueCode = UUID.randomUUID().toString();
 
-        List<LottoCombinationDto> combination = lottoCombinationRepository.randomNums(num);
+        List<LottoCombination> combination = lottoCombinationRepository.randomNumss(num);
         List<Store> stores = storeRepository.searchAll();
         List<Lotto> lottos=new ArrayList<>();
         List<List<Byte>> lottoList = new ArrayList<>();
@@ -163,7 +163,7 @@ public class PurchaseService {
 //
 //            // JDBC_TEMPLATE을 이용한 batch insert
 //            jdbcLottoRepository.batchInsertLottos(lottos);
-        return ResponseDto.success("success");
+        return ResponseDto.success(combination);
     }
 
     // 난수 로직에서 800만개 그냥 다 불러와서 생성하는 로직

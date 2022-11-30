@@ -38,6 +38,7 @@ dependencies {
     implementation 'io.micrometer:micrometer-core'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     compile group: 'org.json', name: 'json', version: '20160810'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     // QueryDSL
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"

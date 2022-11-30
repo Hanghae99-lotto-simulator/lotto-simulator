@@ -8,4 +8,6 @@ import java.util.List;
 public interface LottoCombinationCustom {
     List<LottoCombination> searchAll();
     List<LottoCombinationDto> randomNums(Long id);
+
+    List<LottoCombination> randomNum(Long num);
 }

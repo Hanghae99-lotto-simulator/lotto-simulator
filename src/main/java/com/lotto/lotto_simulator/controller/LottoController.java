@@ -19,9 +19,9 @@ public class LottoController {
 
     //feature/uniqueCodeSearch
     @CrossOrigin
-    @GetMapping("/lottos/info/{num}")
-    public ResponseDto<?> lottoInfo(@PathVariable Long num,
-                                    @RequestBody UniqueCodeDto uniqueIdDto) {
-        return lottoService.lottoInfo(num, uniqueIdDto);
+    @GetMapping("/lottos/info")
+    public ResponseDto<?> lottoInfo(@RequestParam Long num,
+                                    @RequestParam String uniqueCode) {
+        return lottoService.lottoInfo(num, uniqueCode);
     }
 }

@@ -19,6 +19,7 @@ import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
 import lombok.AllArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -264,7 +265,11 @@ public class RoundService {
     }
 
     @Transactional
-    public ResponseDto<?> newestWinningNums(Long num) {
+    @Scheduled(cron = "* * 0 * * 7" )
+    public ResponseDto<?> newestWinningNums() {
+
+        // Round 테이블의 데이터 개수 반환
+        long num = roundRepository.countQuery() + 1;
 
         // api에 받아올 원본 데이터 담을 변수
         String result = " ";
@@ -324,17 +329,3 @@ public class RoundService {
 }
 
 
-//HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-//            urlConnection.connect();
-//            BufferedInputStream bufferedInputStream = new BufferedInputStream(urlConnection.getInputStream());
-//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bufferedInputStream, "UTF-8"));
-//            String returnLine;
-//            while((returnLine = bufferedReader.readLine()) != null)
-//                result.append(returnLine);
-
-
-//BufferedReader bf;
-//            bf = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-//            result = bf.readLine();
-//
-//            JSONParser jsonParser = new JSONParser();

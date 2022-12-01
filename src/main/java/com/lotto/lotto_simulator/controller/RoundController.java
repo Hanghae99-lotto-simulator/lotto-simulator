@@ -41,8 +41,8 @@ public class RoundController {
 
     // 새로운 회차 당첨번호 가져오기
     @CrossOrigin
-    @PostMapping("/newest-winningNums/{num}")
-    public ResponseDto<?> newestWinningNum(@PathVariable Long num) {
-        return roundService.newestWinningNums(num);
+    @PostMapping("/newest-winningNums")
+    public ResponseDto<?> newestWinningNum() {
+        return roundService.newestWinningNums();
     }
 }

@@ -54,7 +54,9 @@ jobs:
           port: 40022
           envs: GITHUB_SHA
           script: |
-            docker pull rolety2202/lottosimulator:latest
-            docker stop lottosimulator
-            docker rm lottosimulator
-            docker run -d --rm --name lottosimulator -p 8080:8080 rolety2202/lottosimulator
+            cd docker
+            docker-compose up -d lottoSimulator
+            ## docker pull rolety2202/lottosimulator:latest
+            ## docker stop lottosimulator
+            ## docker rm lottosimulator
+            ## docker run -d --rm --name lottosimulator -p 8080:8080 rolety2202/lottosimulator

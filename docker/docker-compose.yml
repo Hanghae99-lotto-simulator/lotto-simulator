@@ -1,0 +1,75 @@
+version: '3'
+services:
+  jossiya:
+    image: library/mysql:8.0
+    container_name: jossiya
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_USER: jossi
+      MYSQL_PASSWORD: 1223
+      MYSQL_ROOT_PASSWORD: 1223
+      TZ: Asia/Seoul
+    volumes:
+      - ./db/mysql/data:/var/lib/mysql
+      - ./db/mysql/init:/docker-entrypoint-initdb.d
+
+  lottoSimulator:
+    image: rolety2202/lottosimulator
+    container_name: lottosimulator
+    restart: always
+    ports:
+      - "8080:8080"
+
+  Prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  Grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    restart: always
+    environment:
+     - TZ=Asia/Seoul
+
+  cAdvisor:
+    image: gcr.io/cadvisor/cadvisor
+    restart: always
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - '8090:8080'
+
+  node_exporter:
+    image: prom/node-exporter
+    restart: always
+    ports:
+      - '9100:9100'
+
+  mysqld-exporter:
+    image: quay.io/prometheus/mysqld-exporter
+    command:
+     - --collect.info_schema.tablestats
+     - --collect.info_schema.processlist
+    container_name: mysqld-exporter
+    environment:
+      - DATA_SOURCE_NAME=exporter:ht3zXqEQVWju2X@(jossiya:3306)/
+    ports:
+      - 9104:9104
+
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8888:8080

@@ -24,4 +24,11 @@ public class LottoController {
                                     @RequestParam String uniqueCode) {
         return lottoService.lottoInfo(num, uniqueCode);
     }
+
+    @CrossOrigin
+    @GetMapping("/lottos/infoV2")
+    public ResponseDto<?> lottoInfos(@RequestParam Long num,
+                                    @RequestParam String uniqueCode) {
+        return lottoService.lottoInfos(num, uniqueCode);
+    }
 }

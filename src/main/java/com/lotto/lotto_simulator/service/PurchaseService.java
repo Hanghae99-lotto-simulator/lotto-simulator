@@ -34,7 +34,7 @@ public class PurchaseService {
     @Transactional
     public ResponseDto<?> lottoCreates(Long nums) {
 
-        String uniqueCode = UUID.randomUUID().toString();
+        String uniqueCode = UUID.randomUUID().toString().replace("-","");
 
         // 6자리의 번호를 모아둔 로또 한 게임
         List<Byte> lotto;
@@ -118,7 +118,7 @@ public class PurchaseService {
                 .fourthNum(lottoNum.get(3))
                 .fifthNum(lottoNum.get(4))
                 .sixthNum(lottoNum.get(5))
-                .uniqueCode(UUID.randomUUID().toString())
+                .uniqueCode(UUID.randomUUID().toString().replace("-",""))
                 .store(stores.get((int) (Math.random() * stores.size())))
                 .build());
 
@@ -131,7 +131,7 @@ public class PurchaseService {
 //        @BatchSize(size = 1000)
     public ResponseDto<?> lottoCombinationCreates(Long num){
 //            List<LottoCombination> combinationList = lottoCombinationRepository.searchAll();
-        String uniqueCode = UUID.randomUUID().toString();
+        String uniqueCode = UUID.randomUUID().toString().replace("-","");
 
         List<LottoCombination> combination = lottoCombinationRepository.randomNumss(num);
         List<Store> stores = storeRepository.searchAll();
@@ -169,7 +169,7 @@ public class PurchaseService {
     // 난수 로직에서 800만개 그냥 다 불러와서 생성하는 로직
     @Transactional
     public ResponseDto<?> lottoCombinationCreate (Long nums){
-        String uuid = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString().replace("-","");
 
         List<LottoCombination> combinationList = lottoCombinationRepository.searchAll();
 

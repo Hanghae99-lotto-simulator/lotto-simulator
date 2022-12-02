@@ -141,7 +141,7 @@ public class RoundService {
                         .fourthRank((int)(long)(roundWinners.getFourthRank()))
                         .fifthRank((int)(long)(roundWinners.getFifthRank()))
                         .build();
-                return ResponseDto.success(lankRoundDto);
+                return ResponseDto.success("success");
             }
             previousCount = roundWinners.getLottoCnt();
         }

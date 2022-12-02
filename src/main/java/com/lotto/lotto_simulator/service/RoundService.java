@@ -141,7 +141,7 @@ public class RoundService {
                         .fourthRank((int)(long)(roundWinners.getFourthRank()))
                         .fifthRank((int)(long)(roundWinners.getFifthRank()))
                         .build();
-                return ResponseDto.success("success");
+                return ResponseDto.success(lankRoundDto);
             }
             previousCount = roundWinners.getLottoCnt();
         }
@@ -275,7 +275,7 @@ public class RoundService {
                 // 기존과 똑같을 경우 그대로 출력
                 lankRoundDto = LankRoundDto.builder()
                         .id(round.getId())
-                        .Count(round.getId())
+                        .Count(roundCount)
                         .BonusNum(round.getBonus())
                         .date(round.getDate())
                         .RoundArray(rounds)

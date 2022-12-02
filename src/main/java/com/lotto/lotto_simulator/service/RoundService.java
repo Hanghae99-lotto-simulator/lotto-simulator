@@ -243,6 +243,8 @@ public class RoundService {
         return ResponseDto.success(lankRoundDto);
     }
 
+
+    // 로또 당첨자 수 조회 V3
     @Transactional
     public ResponseDto<?> lottoWinsV3(Long num) {
 
@@ -257,6 +259,7 @@ public class RoundService {
         long fourthRank = 0;
         long fifthRank = 0;
 
+        // 당첨번호 배열
         List<Byte> rounds = new ArrayList<>();
         rounds.add(round.getNum1());
         rounds.add(round.getNum2());
@@ -265,8 +268,11 @@ public class RoundService {
         rounds.add(round.getNum5());
         rounds.add(round.getNum6());
 
+        // 기존에 조회 했었던 회차인지 확인
         if(roundWinners != null){
+            // 기존에 조회했을때보다 데이터가 더 많아졌는지 확인
             if(roundWinners.getLottoCnt() == lottoRepository.count()){
+                // 기존과 똑같을 경우 그대로 출력
                 lankRoundDto = LankRoundDto.builder()
                         .id(round.getId())
                         .Count(round.getId())
@@ -281,39 +287,48 @@ public class RoundService {
                         .build();
                 return ResponseDto.success(lankRoundDto);
             }
+            // 기존보다 데이터가 많아졌을 경우 previousCount에 기존 데이터 수 저장
             previousCount = roundWinners.getLottoCnt();
         }
 
-        //라운드 로또  추첨 번호
-
-
+        // previousCount(기존 데이터의 수) 이후에 추가된 데이터 조회
+        // previousCount가 0이라면 전부 조회
         List<LottoDto> lottoList = lottoRepository.improvedSearch(previousCount);
 
-
+        // 가져온 로또 더미데이터 하나를 저장하는 배열
+        byte[] numbers = new byte[6];
+        // 같은 숫자 갯수를 저장하기 위한 변수
+        int score;
 
         for (LottoDto lotto : lottoList) {
-            byte[] numbers = {
-                                lotto.getFirstNum(), lotto.getSecondNum(), lotto.getThirdNum(),
-                                lotto.getFourthNum(), lotto.getFifthNum(), lotto.getSixthNum()
-                            };
-            int score = 0;
 
+            //초기화
+            numbers[0] = lotto.getFirstNum();
+            numbers[1] = lotto.getSecondNum();
+            numbers[2] = lotto.getThirdNum();
+            numbers[3] = lotto.getFourthNum();
+            numbers[4] = lotto.getFifthNum();
+            numbers[5] = lotto.getSixthNum();
+            score = 0;
+
+            // 같은 숫자 갯수 찾기
             for (byte number : numbers){
                 for (byte roundNumber : rounds) {
                     if (number == roundNumber) {
-                        score++;
+                        score++; break;
                     }
                 }
             }
-
+            // 2등 구하기
             if (score == 5) {
                 for (byte number : numbers){
                     if (number == round.getBonus()){
-                        score += 10;
+                        score += 10; break;
                     }
                 }
             }
 
+            // 당첨자 수 누적
             switch (score) {
                 case 3: fifthRank++; break;
                 case 4: fourthRank++; break;
@@ -325,7 +340,7 @@ public class RoundService {
 
 
 
-
+        // 기존에 당첨자 수 데이터가 있었다면 새로 계산된 부분을 갱신
         if(roundWinners != null){
             firstRank += roundWinners.getFirstRank();
             secondRank += roundWinners.getSecondRank();
@@ -334,7 +349,7 @@ public class RoundService {
             fifthRank += roundWinners.getFifthRank();
         }
 
-
+        // 당첨자 수 데이터 저장용 DTO
         roundWinners = RoundWinners.builder()
                 .id(num)
                 .firstRank(firstRank)
@@ -345,6 +360,7 @@ public class RoundService {
                 .lottoCnt(lottoList.size() + previousCount)
                 .build();
 
+        // 당첨자 수 반환용 DTO
         lankRoundDto = LankRoundDto.builder()
                 .id(round.getId())
                 .Count(roundCount)
@@ -358,6 +374,7 @@ public class RoundService {
                 .fifthRank((int)fifthRank)
                 .build();
 
+        // 당첨자 수 데이터를 재사용하기 위해 저장
         roundWinnersRepository.save(roundWinners);
 
         return ResponseDto.success(lankRoundDto);

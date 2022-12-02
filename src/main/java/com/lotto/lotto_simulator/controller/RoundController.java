@@ -2,7 +2,6 @@ package com.lotto.lotto_simulator.controller;
 
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.service.LottoService;
-import com.lotto.lotto_simulator.service.PurchaseService;
 import com.lotto.lotto_simulator.service.RoundService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +28,12 @@ public class RoundController {
     @GetMapping("/lottoWinsV2/{num}")
     public ResponseDto<?> lottoWin(@PathVariable Long num){
         return roundService.lottoWinsV2(num);
+    }
+
+    @CrossOrigin
+    @GetMapping("/lottoWinsV3/{num}")
+    public ResponseDto<?> lottoWin2(@PathVariable Long num){
+        return roundService.lottoWinsV3(num);
     }
 
 

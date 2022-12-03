@@ -210,5 +210,5 @@ public class LottoService {
                 .fifthRank((long) fifthRank)
                 .totalCnt(totalCnt)
                 .build());
-    }
+     }
     }

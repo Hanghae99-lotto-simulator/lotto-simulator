@@ -68,8 +68,10 @@ public class LottoRepositoryImpl implements LottoRepositoryCustom {
 
     @Override
     public List<LottoDto> fullTextSearch(String uniqueCode) {
+//        NumberTemplate booleanTemplate = Expressions.numberTemplate(Double.class,
+//                "function('match',{0},{1})", lotto.uniqueCode, "+" + uniqueCode + "*");
         NumberTemplate booleanTemplate = Expressions.numberTemplate(Double.class,
-                "function('match',{0},{1})", lotto.uniqueCode, "+" + uniqueCode + "*");
+                "function('match',{0},{1})", lotto.uniqueCode, uniqueCode );
 
         return queryFactory.select(new QLottoDto(
                 lotto.firstNum,

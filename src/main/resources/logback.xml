@@ -2,7 +2,7 @@
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
         <!--        - 로그파일의 경로를 설정해줍니다.-->
-        <file>/root/application-log/application.log</file>
+        <file>/application-log/application.log</file>
 
         <!--        - 로그의 패턴을 설정합니다-->
         <encoder>

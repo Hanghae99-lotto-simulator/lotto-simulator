@@ -9,13 +9,28 @@ import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
 import com.lotto.lotto_simulator.repository.roundrepository.RoundRepository;
 import com.lotto.lotto_simulator.repository.roundwinnersrepository.RoundWinnersRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class RoundService {
     private final LottoRepository lottoRepository;
     private final RoundWinnersRepository roundWinnersRepository;
@@ -243,6 +258,72 @@ public class RoundService {
         return ResponseDto.success(lankRoundDto);
     }
 
+    @Transactional
+    @Scheduled(cron = "* * 0 * * 7" )
+    public ResponseDto<?> newestWinningNums() {
+
+        // Round 테이블의 데이터 개수 반환
+        long num = roundRepository.countQuery() + 1;
+
+        // api에 받아올 원본 데이터 담을 변수
+        String result = " ";
+
+        try{
+
+            // URL 객체를 통해서 url을 연결, API 주소에에매개변수로 들어온 num(회차) 추가
+            String apiUrl = "https://www.dhlottery.co.kr/common.do?" +
+                    "method=getLottoNumber" +
+                    "&drwNo=" + num;
+
+            URL url = new URL(apiUrl);
+
+            BufferedReader br;
+
+            // 원본 데이터들을 모두 버퍼에 저장해서 하나의 데이터로 만듬
+            br = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+
+            result = br.readLine();
+
+            // 필요한 값들 parsing
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+            Byte drwtNo1 = Byte.parseByte(String.valueOf(jsonObject.get("drwtNo1")));
+            Byte drwtNo2 = Byte.parseByte(String.valueOf(jsonObject.get("drwtNo2")));
+            Byte drwtNo3 = Byte.parseByte(String.valueOf(jsonObject.get("drwtNo3")));
+            Byte drwtNo4 = Byte.parseByte(String.valueOf(jsonObject.get("drwtNo4")));
+            Byte drwtNo5 = Byte.parseByte(String.valueOf(jsonObject.get("drwtNo5")));
+            Byte drwtNo6 = Byte.parseByte(String.valueOf(jsonObject.get("drwtNo6")));
+            Byte bnusNo = Byte.parseByte(String.valueOf(jsonObject.get("bnusNo")));
+            String date = String.valueOf(jsonObject.get("drwNoDate"));
+            date += " 00:00:00.000";
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+            LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+
+
+            log.info("잘 되었네요");
+
+            // parsing한 값으로 Round 객체 생상
+            Round round = Round.builder()
+                    .num1(drwtNo1)
+                    .num2(drwtNo2)
+                    .num3(drwtNo3)
+                    .num4(drwtNo4)
+                    .num5(drwtNo5)
+                    .num6(drwtNo6)
+                    .date(dateTime)
+                    .bonus(bnusNo)
+                    .build();
+
+            roundRepository.save(round);
+
+            return ResponseDto.success("success");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseDto.success("success");
+    }
+
 
     // 로또 당첨자 수 조회 V3
     @Transactional
@@ -380,4 +461,7 @@ public class RoundService {
         return ResponseDto.success(lankRoundDto);
     }
 
+
 }
+
+

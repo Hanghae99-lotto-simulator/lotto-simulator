@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 })
 public class Round {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lottery")
     private Long id;
 

@@ -3,6 +3,9 @@ package com.lotto.lotto_simulator.repository.lottorepository;
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 
 import com.lotto.lotto_simulator.controller.requestDto.QLottoDto;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -60,6 +63,25 @@ public class LottoRepositoryImpl implements LottoRepositoryCustom {
                 ))
                 .from(lotto)
                 .where(lotto.lotto_id.gt(previousCount))
+                .fetch();
+    }
+
+    @Override
+    public List<LottoDto> fullTextSearch(String uniqueCode) {
+//        NumberTemplate booleanTemplate = Expressions.numberTemplate(Double.class,
+//                "function('match',{0},{1})", lotto.uniqueCode, "+" + uniqueCode + "*");
+        NumberTemplate booleanTemplate = Expressions.numberTemplate(Double.class,
+                "function('match',{0},{1})", lotto.uniqueCode, uniqueCode);
+
+        return queryFactory.select(new QLottoDto(
+                lotto.firstNum,
+                lotto.secondNum,
+                lotto.thirdNum,
+                lotto.fourthNum,
+                lotto.fifthNum,
+                lotto.sixthNum))
+                .from(lotto)
+                .where(booleanTemplate.gt(0))
                 .fetch();
     }
 }

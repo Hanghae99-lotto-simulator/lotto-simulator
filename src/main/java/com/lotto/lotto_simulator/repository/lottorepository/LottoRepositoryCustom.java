@@ -12,4 +12,5 @@ public interface LottoRepositoryCustom {
     List<LottoDto> uniqueCodeSearch(String uniqueCode);
 
     List<LottoDto> improvedSearch(Long previousCount);
+    List<LottoDto> fullTextSearch(String uniqueCode);
 }

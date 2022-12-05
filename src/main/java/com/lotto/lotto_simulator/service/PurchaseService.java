@@ -34,7 +34,7 @@ public class PurchaseService {
     @Transactional
     public ResponseDto<?> lottoCreates(Long nums) {
 
-        String uniqueCode = UUID.randomUUID().toString();
+        String uniqueCode = UUID.randomUUID().toString().replace("-","");
 
         // 6자리의 번호를 모아둔 로또 한 게임
         List<Byte> lotto;
@@ -118,7 +118,7 @@ public class PurchaseService {
                 .fourthNum(lottoNum.get(3))
                 .fifthNum(lottoNum.get(4))
                 .sixthNum(lottoNum.get(5))
-                .uniqueCode(UUID.randomUUID().toString())
+                .uniqueCode(UUID.randomUUID().toString().replace("-",""))
                 .store(stores.get((int) (Math.random() * stores.size())))
                 .build());
 
@@ -131,9 +131,9 @@ public class PurchaseService {
 //        @BatchSize(size = 1000)
     public ResponseDto<?> lottoCombinationCreates(Long num){
 //            List<LottoCombination> combinationList = lottoCombinationRepository.searchAll();
-        String uniqueCode = UUID.randomUUID().toString();
+        String uniqueCode = UUID.randomUUID().toString().replace("-","");
 
-        List<LottoCombinationDto> combination = lottoCombinationRepository.randomNums(num);
+        List<LottoCombination> combination = lottoCombinationRepository.randomNumss(num);
         List<Store> stores = storeRepository.searchAll();
         List<Lotto> lottos=new ArrayList<>();
         List<List<Byte>> lottoList = new ArrayList<>();
@@ -163,13 +163,13 @@ public class PurchaseService {
 //
 //            // JDBC_TEMPLATE을 이용한 batch insert
 //            jdbcLottoRepository.batchInsertLottos(lottos);
-        return ResponseDto.success("success");
+        return ResponseDto.success(combination);
     }
 
     // 난수 로직에서 800만개 그냥 다 불러와서 생성하는 로직
     @Transactional
     public ResponseDto<?> lottoCombinationCreate (Long nums){
-        String uuid = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString().replace("-","");
 
         List<LottoCombination> combinationList = lottoCombinationRepository.searchAll();
 

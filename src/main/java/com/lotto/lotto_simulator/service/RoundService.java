@@ -1,21 +1,13 @@
 package com.lotto.lotto_simulator.service;
 
-import com.lotto.lotto_simulator.controller.requestDto.LottoCombinationDto;
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 import com.lotto.lotto_simulator.controller.responseDto.LankRoundDto;
-import com.lotto.lotto_simulator.controller.responseDto.LottosResponseDto;
-import com.lotto.lotto_simulator.controller.responseDto.RankResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
-import com.lotto.lotto_simulator.entity.Lotto;
 import com.lotto.lotto_simulator.entity.Round;
 import com.lotto.lotto_simulator.entity.RoundWinners;
-import com.lotto.lotto_simulator.entity.Store;
-import com.lotto.lotto_simulator.repository.lottocombinationrepository.LottoCombinationRepository;
-import com.lotto.lotto_simulator.repository.lottorepository.JdbcLottoRepository;
 import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
 import com.lotto.lotto_simulator.repository.roundrepository.RoundRepository;
 import com.lotto.lotto_simulator.repository.roundwinnersrepository.RoundWinnersRepository;
-import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
@@ -331,6 +323,145 @@ public class RoundService {
         }
         return ResponseDto.success("success");
     }
+
+
+    // 로또 당첨자 수 조회 V3
+    @Transactional
+    public ResponseDto<?> lottoWinsV3(Long num) {
+
+        LankRoundDto lankRoundDto;
+        Long roundCount = roundRepository.countQuery();
+        RoundWinners roundWinners = roundWinnersRepository.findById(num).orElse(null);
+        Round round = roundRepository.findByRound(num).orElseThrow();
+        long previousCount = 0;
+        long firstRank = 0;
+        long secondRank = 0;
+        long thirdRank = 0;
+        long fourthRank = 0;
+        long fifthRank = 0;
+
+        // 당첨번호 배열
+        List<Byte> rounds = new ArrayList<>();
+        rounds.add(round.getNum1());
+        rounds.add(round.getNum2());
+        rounds.add(round.getNum3());
+        rounds.add(round.getNum4());
+        rounds.add(round.getNum5());
+        rounds.add(round.getNum6());
+
+        // 기존에 조회 했었던 회차인지 확인
+        if(roundWinners != null){
+            // 기존에 조회했을때보다 데이터가 더 많아졌는지 확인
+            if(roundWinners.getLottoCnt() == lottoRepository.count()){
+                // 기존과 똑같을 경우 그대로 출력
+                lankRoundDto = LankRoundDto.builder()
+                        .id(round.getId())
+                        .Count(roundCount)
+                        .BonusNum(round.getBonus())
+                        .date(round.getDate())
+                        .RoundArray(rounds)
+                        .firstRank((int)(long)(roundWinners.getFirstRank()))
+                        .secondRank((int)(long)(roundWinners.getSecondRank()))
+                        .thirdRank((int)(long)(roundWinners.getThirdRank()))
+                        .fourthRank((int)(long)(roundWinners.getFourthRank()))
+                        .fifthRank((int)(long)(roundWinners.getFifthRank()))
+                        .build();
+                return ResponseDto.success(lankRoundDto);
+            }
+            // 기존보다 데이터가 많아졌을 경우 previousCount에 기존 데이터 수 저장
+            previousCount = roundWinners.getLottoCnt();
+        }
+
+        // previousCount(기존 데이터의 수) 이후에 추가된 데이터 조회
+        // previousCount가 0이라면 전부 조회
+        List<LottoDto> lottoList = lottoRepository.improvedSearch(previousCount);
+
+        // 가져온 로또 더미데이터 하나를 저장하는 배열
+        byte[] numbers = new byte[6];
+        // 같은 숫자 갯수를 저장하기 위한 변수
+        int score;
+
+        for (LottoDto lotto : lottoList) {
+
+            //초기화
+            numbers[0] = lotto.getFirstNum();
+            numbers[1] = lotto.getSecondNum();
+            numbers[2] = lotto.getThirdNum();
+            numbers[3] = lotto.getFourthNum();
+            numbers[4] = lotto.getFifthNum();
+            numbers[5] = lotto.getSixthNum();
+            score = 0;
+
+            // 같은 숫자 갯수 찾기
+            for (byte number : numbers){
+                for (byte roundNumber : rounds) {
+                    if (number == roundNumber) {
+                        score++; break;
+                    }
+                }
+            }
+            // 2등 구하기
+            if (score == 5) {
+                for (byte number : numbers){
+                    if (number == round.getBonus()){
+                        score += 10; break;
+                    }
+                }
+            }
+
+            // 당첨자 수 누적
+            switch (score) {
+                case 3: fifthRank++; break;
+                case 4: fourthRank++; break;
+                case 5: thirdRank++; break;
+                case 6: firstRank++; break;
+                case 15: secondRank++; break;
+            }
+        }
+
+
+
+        // 기존에 당첨자 수 데이터가 있었다면 새로 계산된 부분을 갱신
+        if(roundWinners != null){
+            firstRank += roundWinners.getFirstRank();
+            secondRank += roundWinners.getSecondRank();
+            thirdRank += roundWinners.getThirdRank();
+            fourthRank += roundWinners.getFourthRank();
+            fifthRank += roundWinners.getFifthRank();
+        }
+
+        // 당첨자 수 데이터 저장용 DTO
+        roundWinners = RoundWinners.builder()
+                .id(num)
+                .firstRank(firstRank)
+                .secondRank(secondRank)
+                .thirdRank(thirdRank)
+                .fourthRank(fourthRank)
+                .fifthRank(fifthRank)
+                .lottoCnt(lottoList.size() + previousCount)
+                .build();
+
+        // 당첨자 수 반환용 DTO
+        lankRoundDto = LankRoundDto.builder()
+                .id(round.getId())
+                .Count(roundCount)
+                .BonusNum(round.getBonus())
+                .date(round.getDate())
+                .RoundArray(rounds)
+                .firstRank((int)firstRank)
+                .secondRank((int)secondRank)
+                .thirdRank((int)thirdRank)
+                .fourthRank((int)fourthRank)
+                .fifthRank((int)fifthRank)
+                .build();
+
+        // 당첨자 수 데이터를 재사용하기 위해 저장
+        roundWinnersRepository.save(roundWinners);
+
+        return ResponseDto.success(lankRoundDto);
+    }
+
+
 }
 
 

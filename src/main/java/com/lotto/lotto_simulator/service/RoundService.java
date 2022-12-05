@@ -17,6 +17,7 @@ import com.lotto.lotto_simulator.repository.roundrepository.RoundRepository;
 import com.lotto.lotto_simulator.repository.roundwinnersrepository.RoundWinnersRepository;
 import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -37,6 +38,7 @@ import java.util.*;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class RoundService {
     private final LottoRepository lottoRepository;
     private final RoundWinnersRepository roundWinnersRepository;
@@ -304,6 +306,9 @@ public class RoundService {
             date += " 00:00:00.000";
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
             LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+
+
+            log.info("잘 되었네요");
 
             // parsing한 값으로 Round 객체 생상
             Round round = Round.builder()

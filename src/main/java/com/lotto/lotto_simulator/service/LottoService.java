@@ -42,7 +42,7 @@ public class LottoService {
     public ResponseDto<?> lottoInfo(Long num, String uniqueCode) {
 
         // 매개변수로 들어온 유니크 코드를 가지고 있는 Lotto 전부 가져오기
-        List<LottoDto> lottoList = lottoRepository.uniqueCodeSearch(uniqueCode);
+        List<LottoDto> lottoList = lottoRepository.uniqueCodeSearch(uniqueCode.replace(" ",""));
 
         // 매개변수로 들어온 유니크코드를 가지고 있는 로또 데이터가 몇 개 인지
         int totalCnt = lottoList.size();
@@ -59,9 +59,9 @@ public class LottoService {
 
 
         List<List<Byte>> singleLottoNum = new ArrayList<>();
-
+        List<Byte> lottoNum=null;
         for (LottoDto l : lottoList) {
-            List<Byte> lottoNum = new ArrayList<>();
+            lottoNum= new ArrayList<>();
             lottoNum.add(l.getFirstNum());
             lottoNum.add(l.getSecondNum());
             lottoNum.add(l.getThirdNum());
@@ -69,8 +69,8 @@ public class LottoService {
             lottoNum.add(l.getFifthNum());
             lottoNum.add(l.getSixthNum());
             singleLottoNum.add(lottoNum);
-        }
 
+        }
         int firstRank = 0;
         int secondRank = 0;
         int thirdRank = 0;
@@ -81,10 +81,9 @@ public class LottoService {
         List<List<Byte>> firstList = new ArrayList<>();
         List<List<Byte>> secondList = new ArrayList<>();
         List<List<Byte>> thirdList = new ArrayList<>();
-
+        HashMap<Byte, Integer> map=null;
         for (List<Byte> l : singleLottoNum) {
-
-            HashMap<Byte, Integer> map = new HashMap<>();
+            map= new HashMap<>();
             for (Byte value : rounds) {
                 map.put(value, map.getOrDefault(value, 0) + 1);
             }
@@ -129,7 +128,7 @@ public class LottoService {
     public ResponseDto<?> lottoInfos(Long num, String uniqueCode) {
 
         // 매개변수로 들어온 유니크 코드를 가지고 있는 Lotto 전부 가져오기
-        List<LottoDto> lottoList = lottoRepository.fullTextSearch(uniqueCode);
+        List<LottoDto> lottoList = lottoRepository.fullTextSearch(uniqueCode.replace(" ",""));
 
         // 매개변수로 들어온 유니크코드를 가지고 있는 로또 데이터가 몇 개 인지
         int totalCnt = lottoList.size();

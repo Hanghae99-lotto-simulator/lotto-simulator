@@ -478,7 +478,7 @@ public class RoundService {
             roundWinnersList.set((int)(long)roundWinners.getId() - 1, roundWinners);
         }
 
-        for (long i = 1; i <= roundCount; i++) {
+        for (long i = 0; i < roundCount; i++) {
             RoundWinners roundWinner = roundWinnersList.get((int) i);
             long previousCount = 0;
             long firstRank = 0;
@@ -576,7 +576,7 @@ public class RoundService {
 
             // 당첨자 수 데이터 저장용 DTO
             roundWinner = RoundWinners.builder()
-                    .id(i)
+                    .id(i + 1)
                     .firstRank(firstRank)
                     .secondRank(secondRank)
                     .thirdRank(thirdRank)

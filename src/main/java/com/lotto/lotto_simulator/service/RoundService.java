@@ -503,7 +503,7 @@ public class RoundService {
                 // 기존에 조회했을때보다 데이터가 더 많아졌는지 확인
                 if (roundWinner.getLottoCnt() == allLottoCount) {
                     // 기존과 똑같을 경우 그대로 출력
-                    break;
+                    continue;
                 }
                 // 기존보다 데이터가 많아졌을 경우 previousCount에 기존 데이터 수 저장
                 previousCount = roundWinner.getLottoCnt();

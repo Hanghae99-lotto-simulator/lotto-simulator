@@ -17,12 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -459,6 +455,144 @@ public class RoundService {
         roundWinnersRepository.save(roundWinners);
 
         return ResponseDto.success(lankRoundDto);
+    }
+
+    // 0시에 모든 회차 당첨자 수 계산해서 저장
+    @Scheduled(cron = "0 * 20 * * *" )
+    @Transactional
+    public ResponseDto<?> lottoWinsAll() {
+
+        Long roundCount = roundRepository.countQuery();
+        List<LottoDto> lottoList = lottoRepository.improvedSearch(0L);
+        List<Round> roundList = roundRepository.findAll();
+        List<RoundWinners> roundWinnersTemp = roundWinnersRepository.findAll();
+        List<RoundWinners> roundWinnersList = new ArrayList<>(roundList.size());
+        List<RoundWinners> roundWinnersForSave = new ArrayList<>();
+        int allLottoCount = (int)lottoRepository.count();
+
+        for (int i = 0; i < roundList.size(); i++) {
+            roundWinnersList.add(null);
+        }
+
+        for (RoundWinners roundWinners : roundWinnersTemp){
+            roundWinnersList.set((int)(long)roundWinners.getId() - 1, roundWinners);
+        }
+
+        for (long i = 0; i < roundCount; i++) {
+            RoundWinners roundWinner = roundWinnersList.get((int) i);
+            long previousCount = 0;
+            long addedCount = 0;
+            long firstRank = 0;
+            long secondRank = 0;
+            long thirdRank = 0;
+            long fourthRank = 0;
+            long fifthRank = 0;
+
+            // 당첨번호 배열
+            List<Byte> rounds = new ArrayList<>();
+            rounds.add(roundList.get((int)i).getNum1());
+            rounds.add(roundList.get((int)i).getNum2());
+            rounds.add(roundList.get((int)i).getNum3());
+            rounds.add(roundList.get((int)i).getNum4());
+            rounds.add(roundList.get((int)i).getNum5());
+            rounds.add(roundList.get((int)i).getNum6());
+
+
+
+            // 기존에 조회 했었던 회차인지 확인
+            if (roundWinner != null) {
+                // 기존에 조회했을때보다 데이터가 더 많아졌는지 확인
+                if (roundWinner.getLottoCnt() == allLottoCount) {
+                    // 기존과 똑같을 경우 그대로 출력
+                    continue;
+                }
+                // 기존보다 데이터가 많아졌을 경우 previousCount에 기존 데이터 수 저장
+                previousCount = roundWinner.getLottoCnt();
+            }
+
+            // 가져온 로또 더미데이터 하나를 저장하는 배열
+            byte[] numbers = new byte[6];
+            // 같은 숫자 갯수를 저장하기 위한 변수
+            int score;
+
+            for (int j = (int)previousCount; j < lottoList.size(); j++) {
+
+                //초기화
+                numbers[0] = lottoList.get(j).getFirstNum();
+                numbers[1] = lottoList.get(j).getSecondNum();
+                numbers[2] = lottoList.get(j).getThirdNum();
+                numbers[3] = lottoList.get(j).getFourthNum();
+                numbers[4] = lottoList.get(j).getFifthNum();
+                numbers[5] = lottoList.get(j).getSixthNum();
+                score = 0;
+
+                // 같은 숫자 갯수 찾기
+                for (byte number : numbers) {
+                    for (byte roundNumber : rounds) {
+                        if (number == roundNumber) {
+                            score++;
+                            break;
+                        }
+                    }
+                }
+                // 2등 구하기
+                if (score == 5) {
+                    for (byte number : numbers) {
+                        if (number == roundList.get((int)i).getBonus()) {
+                            score += 10;
+                            break;
+                        }
+                    }
+                }
+
+                // 당첨자 수 누적
+                switch (score) {
+                    case 3:
+                        fifthRank++;
+                        break;
+                    case 4:
+                        fourthRank++;
+                        break;
+                    case 5:
+                        thirdRank++;
+                        break;
+                    case 6:
+                        firstRank++;
+                        break;
+                    case 15:
+                        secondRank++;
+                        break;
+                }
+
+                addedCount++;
+            }
+
+
+            // 기존에 당첨자 수 데이터가 있었다면 새로 계산된 부분을 갱신
+            if (roundWinner != null) {
+                firstRank += roundWinner.getFirstRank();
+                secondRank += roundWinner.getSecondRank();
+                thirdRank += roundWinner.getThirdRank();
+                fourthRank += roundWinner.getFourthRank();
+                fifthRank += roundWinner.getFifthRank();
+            }
+
+            // 당첨자 수 데이터 저장용 DTO
+            roundWinner = RoundWinners.builder()
+                    .id(i + 1)
+                    .firstRank(firstRank)
+                    .secondRank(secondRank)
+                    .thirdRank(thirdRank)
+                    .fourthRank(fourthRank)
+                    .fifthRank(fifthRank)
+                    .lottoCnt(previousCount + addedCount)
+                    .build();
+
+            // 당첨자 수 데이터를 재사용하기 위해 저장
+            roundWinnersForSave.add(roundWinner);
+        }
+        roundWinnersRepository.saveAll(roundWinnersForSave);
+        return ResponseDto.success("success");
     }
 
 

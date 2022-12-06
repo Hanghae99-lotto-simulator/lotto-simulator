@@ -36,6 +36,12 @@ public class RoundController {
         return roundService.lottoWinsV3(num);
     }
 
+    @CrossOrigin
+    @GetMapping("/lottoWinsAll")
+    public ResponseDto<?> lottoWinAll(){
+        return roundService.lottoWinsAll();
+    }
+
 
     //페이징 기능 달린 로또 회차 당첨 등수.
     @CrossOrigin

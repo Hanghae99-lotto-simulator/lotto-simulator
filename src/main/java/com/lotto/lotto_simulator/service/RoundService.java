@@ -458,7 +458,7 @@ public class RoundService {
     }
 
     // 0시에 모든 회차 당첨자 수 계산해서 저장
-    @Scheduled(cron = "* * 0 * * *" )
+    @Scheduled(cron = "0 * 20 * * *" )
     @Transactional
     public ResponseDto<?> lottoWinsAll() {
 
@@ -481,6 +481,7 @@ public class RoundService {
         for (long i = 0; i < roundCount; i++) {
             RoundWinners roundWinner = roundWinnersList.get((int) i);
             long previousCount = 0;
+            long addedCount = 0;
             long firstRank = 0;
             long secondRank = 0;
             long thirdRank = 0;
@@ -562,6 +563,8 @@ public class RoundService {
                         secondRank++;
                         break;
                 }
+
+                addedCount++;
             }
 
 
@@ -582,7 +585,7 @@ public class RoundService {
                     .thirdRank(thirdRank)
                     .fourthRank(fourthRank)
                     .fifthRank(fifthRank)
-                    .lottoCnt(lottoList.size() + previousCount)
+                    .lottoCnt(previousCount + addedCount)
                     .build();
 
             // 당첨자 수 데이터를 재사용하기 위해 저장

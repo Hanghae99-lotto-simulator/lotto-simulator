@@ -458,7 +458,7 @@ public class RoundService {
     }
 
     // 0시에 모든 회차 당첨자 수 계산해서 저장
-    @Scheduled(cron = "0 * 20 * * *" )
+    @Scheduled(cron = "0 * 0 * * *" )
     @Transactional
     public ResponseDto<?> lottoWinsAll() {
 

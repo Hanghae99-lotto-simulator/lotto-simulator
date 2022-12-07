@@ -1,6 +1,5 @@
 package com.lotto.lotto_simulator.service;
 
-import com.lotto.lotto_simulator.controller.requestDto.LottoCombinationDto;
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 import com.lotto.lotto_simulator.controller.responseDto.LottoResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.LottosResponseDto;
@@ -8,10 +7,11 @@ import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.entity.Lotto;
 import com.lotto.lotto_simulator.entity.LottoCombination;
 import com.lotto.lotto_simulator.entity.Store;
+import com.lotto.lotto_simulator.exception.CustomError;
+import com.lotto.lotto_simulator.exception.CustomException;
 import com.lotto.lotto_simulator.repository.lottocombinationrepository.LottoCombinationRepository;
 import com.lotto.lotto_simulator.repository.lottorepository.JdbcLottoRepository;
 import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
-import com.lotto.lotto_simulator.repository.roundrepository.RoundRepository;
 import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +33,10 @@ public class PurchaseService {
     //로또 더미데이터 nums개 만큼 자동으로 생성 클라이언트가 로또 여러장 구매
     @Transactional
     public ResponseDto<?> lottoCreates(Long nums) {
+
+        if(!(nums > 0)){
+            throw new CustomException(CustomError.INVALID_PARAMETER);
+        }
 
         String uniqueCode = UUID.randomUUID().toString().replace("-","");
 

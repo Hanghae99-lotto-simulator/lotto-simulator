@@ -1,20 +1,14 @@
 package com.lotto.lotto_simulator.service;
 
-import com.lotto.lotto_simulator.controller.requestDto.LottoCombinationDto;
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
-import com.lotto.lotto_simulator.controller.requestDto.UniqueCodeDto;
 import com.lotto.lotto_simulator.controller.responseDto.*;
-import com.lotto.lotto_simulator.entity.Lotto;
-import com.lotto.lotto_simulator.entity.LottoCombination;
 import com.lotto.lotto_simulator.entity.Round;
-import com.lotto.lotto_simulator.entity.Store;
-import com.lotto.lotto_simulator.repository.lottorepository.JdbcLottoRepository;
-import com.lotto.lotto_simulator.repository.lottocombinationrepository.LottoCombinationRepository;
+import com.lotto.lotto_simulator.exception.CustomError;
+import com.lotto.lotto_simulator.exception.CustomException;
 import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
 import com.lotto.lotto_simulator.repository.roundrepository.RoundRepository;
-import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
 import lombok.AllArgsConstructor;
-import org.hibernate.annotations.BatchSize;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -133,8 +127,13 @@ public class LottoService {
         // 매개변수로 들어온 유니크코드를 가지고 있는 로또 데이터가 몇 개 인지
         int totalCnt = lottoList.size();
 
+        if(totalCnt == 0){
+            throw new CustomException(CustomError.UNIQUE_CODE_NOT_FOUND);
+        }
+
+
         // num라운드의 당첨번호 정보를 가져온다.
-        Round round = roundRepository.findByRound(num).orElseThrow();
+        Round round = roundRepository.findByRound(num).orElseThrow(() -> new CustomException(CustomError.ROUND_NOT_FOUND));
         List<Byte> rounds = new ArrayList<>();
         rounds.add(round.getNum1());
         rounds.add(round.getNum2());

@@ -18,14 +18,13 @@ public class LottoController {
     private final LottoService lottoService;
 
     //feature/uniqueCodeSearch
-    @CrossOrigin
+
     @GetMapping("/lottos/info")
     public ResponseDto<?> lottoInfo(@RequestParam Long num,
                                     @RequestParam String uniqueCode) {
         return lottoService.lottoInfo(num, uniqueCode);
     }
 
-    @CrossOrigin
     @GetMapping("/lottos/infoV2")
     public ResponseDto<?> lottoInfos(@RequestParam Long num,
                                     @RequestParam String uniqueCode) {

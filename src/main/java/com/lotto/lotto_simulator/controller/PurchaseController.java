@@ -24,26 +24,4 @@ public class PurchaseController {
     }
 
 
-
-    //로또 수동 구매
-    @CrossOrigin
-    @PostMapping("/lottoManuals")
-    public ResponseDto<?> lottoManual(@RequestBody LottoDto lottoDto) {
-        return purchaseService.lottoManual(lottoDto);
-    }
-
-    //test
-    //800만개 난수로직 에 추가 한것 테스트용
-    @CrossOrigin
-    @GetMapping("/lottosAutos/{nums}")
-    public ResponseDto<?> lottoAutoss(@PathVariable Long nums) {
-        return purchaseService.lottoCombinationCreate(nums);
-    }
-
-    //800만게 쿼리문으로 렌덤하게 찾아와서 번호 생성 테스트용
-    @CrossOrigin
-    @GetMapping("/lottosAutoss/{num}")
-    public ResponseDto<?> lottoCombinationCreates(@PathVariable Long num) {
-        return purchaseService.lottoCombinationCreates(num);
-    }
 }

@@ -1,10 +1,7 @@
 package com.lotto.lotto_simulator.controller;
 
-import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
-import com.lotto.lotto_simulator.service.LottoService;
 import com.lotto.lotto_simulator.service.PurchaseService;
-import com.lotto.lotto_simulator.service.RoundService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @RequestMapping("/api")
 public class PurchaseController {
-    private final LottoService lottoService;
+
     private final PurchaseService purchaseService;
 
 

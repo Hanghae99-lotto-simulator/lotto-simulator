@@ -2,6 +2,7 @@ package com.lotto.lotto_simulator.service;
 
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 import com.lotto.lotto_simulator.controller.responseDto.LankRoundDto;
+import com.lotto.lotto_simulator.controller.responseDto.RankResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.entity.Round;
 import com.lotto.lotto_simulator.entity.RoundWinners;
@@ -323,11 +324,7 @@ public class RoundService {
         RoundWinners roundWinners = roundWinnersRepository.findById(num).orElse(null);
         Round round = roundRepository.findByRound(num).orElseThrow();
         long previousCount = 0;
-        long firstRank = 0;
-        long secondRank = 0;
-        long thirdRank = 0;
-        long fourthRank = 0;
-        long fifthRank = 0;
+
 
         // 당첨번호 배열
         List<Byte> rounds = new ArrayList<>();
@@ -347,37 +344,14 @@ public class RoundService {
         // previousCount가 0이라면 전부 조회
         List<LottoDto> lottoList = lottoRepository.improvedSearch(previousCount);
 
-        // 가져온 로또 더미데이터 하나를 저장하는 배열
-        byte[] numbers = new byte[6];
-        // 같은 숫자 갯수를 저장하기 위한 변수
-        int score;
+        // 당첨자 수 구하기
+        RankResponseDto winners = lotteryDraw(lottoList, round, rounds);
 
-        for (LottoDto lotto : lottoList) {
-
-            //초기화
-            numbers[0] = lotto.getFirstNum();
-            numbers[1] = lotto.getSecondNum();
-            numbers[2] = lotto.getThirdNum();
-            numbers[3] = lotto.getFourthNum();
-            numbers[4] = lotto.getFifthNum();
-            numbers[5] = lotto.getSixthNum();
-            score = 0;
-
-            // 같은 숫자 갯수 찾기
-            score = getScore(rounds, numbers, score);
-            // 2등 구하기
-            score = getScore(round, numbers, score);
-
-            // 당첨자 수 누적
-            switch (score) {
-                case 3: fifthRank++; break;
-                case 4: fourthRank++; break;
-                case 5: thirdRank++; break;
-                case 6: firstRank++; break;
-                case 15: secondRank++; break;
-            }
-        }
-
+        long firstRank = winners.getFirstRank();
+        long secondRank = winners.getSecondRank();
+        long thirdRank = winners.getThirdRank();
+        long fourthRank = winners.getFourthRank();
+        long fifthRank = winners.getFifthRank();
 
 
         // 기존에 당첨자 수 데이터가 있었다면 새로 계산된 부분을 갱신
@@ -594,6 +568,55 @@ public class RoundService {
         return ResponseDto.success("success");
     }
 
+
+    private RankResponseDto lotteryDraw(List<LottoDto> lottoList, Round round, List<Byte> rounds) {
+
+        // 가져온 로또 더미데이터 하나를 저장하는 배열
+        byte[] numbers = new byte[6];
+        // 같은 숫자 갯수를 저장하기 위한 변수
+        int score;
+        // 등수별 인원
+        int firstRank = 0;
+        int secondRank = 0;
+        int thirdRank = 0;
+        int fourthRank = 0;
+        int fifthRank = 0;
+
+
+        for (LottoDto lotto : lottoList) {
+
+            //초기화
+            numbers[0] = lotto.getFirstNum();
+            numbers[1] = lotto.getSecondNum();
+            numbers[2] = lotto.getThirdNum();
+            numbers[3] = lotto.getFourthNum();
+            numbers[4] = lotto.getFifthNum();
+            numbers[5] = lotto.getSixthNum();
+            score = 0;
+
+            // 같은 숫자 갯수 찾기
+            score = getScore(rounds, numbers, score);
+            // 2등 구하기
+            score = getScore(round, numbers, score);
+
+            // 당첨자 수 누적
+            switch (score) {
+                case 3: fifthRank++; break;
+                case 4: fourthRank++; break;
+                case 5: thirdRank++; break;
+                case 6: firstRank++; break;
+                case 15: secondRank++; break;
+            }
+        }
+
+        return RankResponseDto.builder()
+                .firstRank(firstRank)
+                .secondRank(secondRank)
+                .thirdRank(thirdRank)
+                .fourthRank(fourthRank)
+                .fifthRank(fifthRank)
+                .build();
+    }
 
 }
 

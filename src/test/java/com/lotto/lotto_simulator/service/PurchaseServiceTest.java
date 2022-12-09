@@ -97,4 +97,26 @@ class PurchaseServiceTest {
         assertThat(result.getLottoArray().size()).isEqualTo(lottosResponseDto.getLottoArray().size());
 
     }
+
+    @Test
+    @DisplayName("nums가 0보다 작은 숫자가 들어왔을 때 예외처리 테스트")
+    public void lottoCreatesExceptionTest()  {
+        // given
+        Long nums = -1L;
+        int status = 406;
+        String code = "M001";
+        String message = "1 이상의 수만 입력할 수 있습니다.";
+        Store store = Store.builder().build();
+
+
+        // when
+        // 첫번째 인자는 발생할 예외 클래스의 타입, 두번째 인자는 두번째 인자를 실행하여 예외가 발생할 경우 첫번째 인자와 발생된 Exception이 같은타입인지 체크합
+        CustomException exception = assertThrows(CustomException.class, () -> purchaseService.lottoCreates(nums));
+
+        // then
+        assertThat(exception.getCustomError().getMessage()).isEqualTo(message);
+        assertThat(exception.getCustomError().getCode()).isEqualTo(code);
+        assertThat(exception.getCustomError().getStatus()).isEqualTo(status);
+
+    }
 }

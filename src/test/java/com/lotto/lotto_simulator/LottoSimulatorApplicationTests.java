@@ -8,6 +8,7 @@ class LottoSimulatorApplicationTests {
 
     @Test
     void contextLoads() {
+        System.out.println("true = " + true);
     }
 
 }

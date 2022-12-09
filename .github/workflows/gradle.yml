@@ -29,6 +29,7 @@ jobs:
         
       - name: make ENV_test
         run: |
+          cd ../../../
           cd ./src/test/resources
           touch ./application.properties
           echo "${{ secrets.APPLICATION_PROPERTIES_TEST }}" > ./application.properties

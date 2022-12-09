@@ -3,7 +3,6 @@ package com.lotto.lotto_simulator.repository.lottorepository;
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 
 import com.lotto.lotto_simulator.controller.requestDto.QLottoDto;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;

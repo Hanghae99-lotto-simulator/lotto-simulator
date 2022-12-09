@@ -1,5 +1,6 @@
 package com.lotto.lotto_simulator.controller;
 
+import com.lotto.lotto_simulator.controller.responseDto.LankRoundDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.service.LottoService;
 import com.lotto.lotto_simulator.service.RoundService;
@@ -7,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @AllArgsConstructor
@@ -29,8 +32,8 @@ public class RoundController {
     }
 
     @GetMapping("/lottoWinsV3/{num}")
-    public ResponseDto<?> lottoWin2(@PathVariable Long num){
-        return roundService.lottoWinsV3(num);
+    public CompletableFuture<CompletableFuture<ResponseDto<LankRoundDto>>> lottoWin2(@PathVariable Long num){
+        return CompletableFuture.completedFuture(roundService.lottoWinsV3(num));
     }
 
     @GetMapping("/lottoWinsAll")

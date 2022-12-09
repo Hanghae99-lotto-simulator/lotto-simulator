@@ -28,6 +28,7 @@ public class Store {
     private String lotAddress;
 
     @JsonIgnore
+    @Builder.Default
     @OneToMany(mappedBy = "store",
             cascade = CascadeType.ALL,
             orphanRemoval = true)

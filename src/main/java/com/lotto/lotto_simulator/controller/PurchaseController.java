@@ -14,11 +14,9 @@ public class PurchaseController {
 
 
     //로또 더미데이터 여러개
-    @CrossOrigin
     @PostMapping("/lottoAutos/{nums}")
     public ResponseDto<?> lottoAutos(@PathVariable Long nums) {
         return purchaseService.lottoCreates(nums);
     }
-
 
 }

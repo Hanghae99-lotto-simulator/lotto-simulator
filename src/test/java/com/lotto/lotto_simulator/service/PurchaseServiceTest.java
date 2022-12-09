@@ -4,6 +4,7 @@ import com.lotto.lotto_simulator.controller.responseDto.LottosResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.entity.Lotto;
 import com.lotto.lotto_simulator.entity.Store;
+import com.lotto.lotto_simulator.exception.CustomException;
 import com.lotto.lotto_simulator.repository.lottocombinationrepository.LottoCombinationRepository;
 import com.lotto.lotto_simulator.repository.lottorepository.JdbcLottoRepository;
 import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;

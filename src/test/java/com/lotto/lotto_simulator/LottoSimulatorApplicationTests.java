@@ -6,9 +6,5 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class LottoSimulatorApplicationTests {
 
-    @Test
-    void contextLoads() {
-        System.out.println("true = " + true);
-    }
 
 }

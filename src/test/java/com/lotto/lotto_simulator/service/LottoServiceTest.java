@@ -9,6 +9,7 @@ import com.lotto.lotto_simulator.repository.lottorepository.JdbcLottoRepository;
 import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
 import com.lotto.lotto_simulator.repository.roundrepository.RoundRepository;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;

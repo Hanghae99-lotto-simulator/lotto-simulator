@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @AllArgsConstructor
@@ -40,12 +42,7 @@ public class RoundService {
 
         //라운드 로또  추첨 번호
         List<Byte> rounds = new ArrayList<>();
-        rounds.add(round.getNum1());
-        rounds.add(round.getNum2());
-        rounds.add(round.getNum3());
-        rounds.add(round.getNum4());
-        rounds.add(round.getNum5());
-        rounds.add(round.getNum6());
+        roundAdd(round, rounds);
 
 
         System.out.println("rounds = " + Arrays.toString(rounds.toArray()));
@@ -131,12 +128,7 @@ public class RoundService {
         Round round = roundRepository.findByRound(num).orElseThrow();
 
         List<Byte> rounds = new ArrayList<>();
-        rounds.add(round.getNum1());
-        rounds.add(round.getNum2());
-        rounds.add(round.getNum3());
-        rounds.add(round.getNum4());
-        rounds.add(round.getNum5());
-        rounds.add(round.getNum6());
+        roundAdd(round, rounds);
 
         if(roundWinners != null){
             if(roundWinners.getLottoCnt() == lottoRepository.count()){
@@ -323,7 +315,8 @@ public class RoundService {
 
     // 로또 당첨자 수 조회 V3
     @Transactional
-    public ResponseDto<?> lottoWinsV3(Long num) {
+    @Async
+    public CompletableFuture<ResponseDto<LankRoundDto>> lottoWinsV3(Long num) {
 
         LankRoundDto lankRoundDto;
         Long roundCount = roundRepository.countQuery();
@@ -338,32 +331,14 @@ public class RoundService {
 
         // 당첨번호 배열
         List<Byte> rounds = new ArrayList<>();
-        rounds.add(round.getNum1());
-        rounds.add(round.getNum2());
-        rounds.add(round.getNum3());
-        rounds.add(round.getNum4());
-        rounds.add(round.getNum5());
-        rounds.add(round.getNum6());
+
+        roundAdd(round, rounds);
 
         // 기존에 조회 했었던 회차인지 확인
         if(roundWinners != null){
             // 기존에 조회했을때보다 데이터가 더 많아졌는지 확인
-            if(roundWinners.getLottoCnt() == lottoRepository.count()){
-                // 기존과 똑같을 경우 그대로 출력
-                lankRoundDto = LankRoundDto.builder()
-                        .id(round.getId())
-                        .Count(roundCount)
-                        .BonusNum(round.getBonus())
-                        .date(round.getDate())
-                        .RoundArray(rounds)
-                        .firstRank((int)(long)(roundWinners.getFirstRank()))
-                        .secondRank((int)(long)(roundWinners.getSecondRank()))
-                        .thirdRank((int)(long)(roundWinners.getThirdRank()))
-                        .fourthRank((int)(long)(roundWinners.getFourthRank()))
-                        .fifthRank((int)(long)(roundWinners.getFifthRank()))
-                        .build();
-                return ResponseDto.success(lankRoundDto);
-            }
+            CompletableFuture<ResponseDto<LankRoundDto>> lankRoundDto1 = getResponseDtoCompletableFuture(roundCount, roundWinners, round, rounds);
+            if (lankRoundDto1 != null) return lankRoundDto1;
             // 기존보다 데이터가 많아졌을 경우 previousCount에 기존 데이터 수 저장
             previousCount = roundWinners.getLottoCnt();
         }
@@ -389,21 +364,9 @@ public class RoundService {
             score = 0;
 
             // 같은 숫자 갯수 찾기
-            for (byte number : numbers){
-                for (byte roundNumber : rounds) {
-                    if (number == roundNumber) {
-                        score++; break;
-                    }
-                }
-            }
+            score = getScore(rounds, numbers, score);
             // 2등 구하기
-            if (score == 5) {
-                for (byte number : numbers){
-                    if (number == round.getBonus()){
-                        score += 10; break;
-                    }
-                }
-            }
+            score = getScore(round, numbers, score);
 
             // 당첨자 수 누적
             switch (score) {
@@ -454,8 +417,64 @@ public class RoundService {
         // 당첨자 수 데이터를 재사용하기 위해 저장
         roundWinnersRepository.save(roundWinners);
 
-        return ResponseDto.success(lankRoundDto);
+        return CompletableFuture.completedFuture(ResponseDto.success(lankRoundDto));
     }
+
+    private CompletableFuture<ResponseDto<LankRoundDto>> getResponseDtoCompletableFuture(Long roundCount, RoundWinners roundWinners, Round round, List<Byte> rounds) {
+        LankRoundDto lankRoundDto;
+        if(roundWinners.getLottoCnt() == lottoRepository.count()){
+            // 기존과 똑같을 경우 그대로 출력
+            lankRoundDto = LankRoundDto.builder()
+                    .id(round.getId())
+                    .Count(roundCount)
+                    .BonusNum(round.getBonus())
+                    .date(round.getDate())
+                    .RoundArray(rounds)
+                    .firstRank((int)(long)(roundWinners.getFirstRank()))
+                    .secondRank((int)(long)(roundWinners.getSecondRank()))
+                    .thirdRank((int)(long)(roundWinners.getThirdRank()))
+                    .fourthRank((int)(long)(roundWinners.getFourthRank()))
+                    .fifthRank((int)(long)(roundWinners.getFifthRank()))
+                    .build();
+            return CompletableFuture.completedFuture(ResponseDto.success(lankRoundDto));
+        }
+        return null;
+    }
+
+    private static int getScore(Round round, byte[] numbers, int score) {
+        if (score == 5) {
+            for (byte number : numbers){
+                if (number == round.getBonus()){
+                    score += 10; break;
+                }
+            }
+        }
+        return score;
+    }
+
+    private static int getScore(List<Byte> rounds, byte[] numbers, int score) {
+        for (byte number : numbers){
+            for (byte roundNumber : rounds) {
+                if (number == roundNumber) {
+                    score++; break;
+                }
+            }
+        }
+        return score;
+    }
+
+
+    //라운드 번호 분리
+    private static void roundAdd(Round round, List<Byte> rounds) {
+        rounds.add(round.getNum1());
+        rounds.add(round.getNum2());
+        rounds.add(round.getNum3());
+        rounds.add(round.getNum4());
+        rounds.add(round.getNum5());
+        rounds.add(round.getNum6());
+    }
+
+
 
     // 0시에 모든 회차 당첨자 수 계산해서 저장
     @Scheduled(cron = "0 * 0 * * *" )
@@ -490,13 +509,7 @@ public class RoundService {
 
             // 당첨번호 배열
             List<Byte> rounds = new ArrayList<>();
-            rounds.add(roundList.get((int)i).getNum1());
-            rounds.add(roundList.get((int)i).getNum2());
-            rounds.add(roundList.get((int)i).getNum3());
-            rounds.add(roundList.get((int)i).getNum4());
-            rounds.add(roundList.get((int)i).getNum5());
-            rounds.add(roundList.get((int)i).getNum6());
-
+            roundAdd(roundList.get((int) i), rounds);
 
 
             // 기존에 조회 했었던 회차인지 확인
@@ -527,23 +540,9 @@ public class RoundService {
                 score = 0;
 
                 // 같은 숫자 갯수 찾기
-                for (byte number : numbers) {
-                    for (byte roundNumber : rounds) {
-                        if (number == roundNumber) {
-                            score++;
-                            break;
-                        }
-                    }
-                }
+                score = getScore(rounds, numbers, score);
                 // 2등 구하기
-                if (score == 5) {
-                    for (byte number : numbers) {
-                        if (number == roundList.get((int)i).getBonus()) {
-                            score += 10;
-                            break;
-                        }
-                    }
-                }
+                score = getScore(roundList.get((int) i), numbers, score);
 
                 // 당첨자 수 누적
                 switch (score) {

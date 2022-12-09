@@ -17,13 +17,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '17'
-      - name: Setup MySQL
-        uses: samin/mysql-action@v1
-        with:
-          character set server: 'utf8' 
-          mysql database: 'lottotest' 
-          mysql user: 'jossi'
-          mysql password: ${{ secrets.MYSQL_PASSWORD }}
+      
           
         ## 1) git ignore에 등록된 application.properties 파일 생성해주기
       - name: make ENV
@@ -32,7 +26,15 @@ jobs:
           touch ./application.properties
           echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./application.properties
         shell: bash
-
+        
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1
+        with:
+          character set server: 'utf8' 
+          mysql database: 'lottotest' 
+          mysql user: 'jossi'
+          mysql password: ${{ secrets.MYSQL_PASSWORD }}
+          
         ## 2) 스프링 프로젝트 jar 파일 빌드
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

@@ -32,9 +32,6 @@ public class PurchaseService {
             throw new CustomException(CustomError.INVALID_PARAMETER);
         }
 
-        String uniqueCode = UUID.randomUUID().toString().replace("-","");
-
-
         String uniqueCode = getUniqueCode(); // UUID 생성
 
 

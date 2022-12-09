@@ -3,30 +3,32 @@ package com.lotto.lotto_simulator.service;
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 import com.lotto.lotto_simulator.controller.responseDto.GambleDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
-import com.lotto.lotto_simulator.entity.Lotto;
+
 import com.lotto.lotto_simulator.entity.Round;
-import com.lotto.lotto_simulator.repository.lottorepository.JdbcLottoRepository;
+
 import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
 import com.lotto.lotto_simulator.repository.roundrepository.RoundRepository;
-import org.junit.Assert;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Transactional
+@Service
 class LottoServiceTest {
 
     @Mock
@@ -93,10 +95,9 @@ class LottoServiceTest {
         ResponseDto<?> responseDto = lottoService.lottoInfos(num, uniqueCode);
 
         GambleDto data = (GambleDto) responseDto.getData();
-
-        assertEquals(RoundNum, (byte) 10);
-        assertEquals(data.getFifthRank(),0);
-        assertEquals(size,2);
+        assertThat(RoundNum).isEqualTo((byte) 10);
+        assertThat(data.getFifthRank()).isEqualTo(0);
+        assertThat(size).isEqualTo(2);
     }
 
 }

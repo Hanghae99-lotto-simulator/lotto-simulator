@@ -13,7 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table(name="lotto",indexes = {
         @Index(name = "lotto_num_idx"
-                , columnList = "firstNum, secondNum, thirdNum, fourthNum, fifthNum, sixthNum")
+                , columnList = "lotto_id, firstNum, secondNum, thirdNum, fourthNum, fifthNum, sixthNum")
 })
 public class Lotto {
     @Id

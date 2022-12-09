@@ -16,6 +16,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Transactional
+@Service
 class LottoServiceTest {
 
     @Mock

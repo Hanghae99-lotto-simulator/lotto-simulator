@@ -1,15 +1,11 @@
 package com.lotto.lotto_simulator.service;
 
-import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
-import com.lotto.lotto_simulator.controller.responseDto.LottoResponseDto;
+
 import com.lotto.lotto_simulator.controller.responseDto.LottosResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
-import com.lotto.lotto_simulator.entity.Lotto;
-import com.lotto.lotto_simulator.entity.LottoCombination;
+import com.lotto.lotto_simulator.entity.Lotto;;
 import com.lotto.lotto_simulator.entity.Store;
-import com.lotto.lotto_simulator.repository.lottocombinationrepository.LottoCombinationRepository;
 import com.lotto.lotto_simulator.repository.lottorepository.JdbcLottoRepository;
-import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
 import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,9 +16,7 @@ import java.util.*;
 @Service
 @AllArgsConstructor
 public class PurchaseService {
-    private final LottoRepository lottoRepository;
     private final StoreRepository storeRepository;
-    private final LottoCombinationRepository lottoCombinationRepository;
     private final JdbcLottoRepository jdbcLottoRepository;
 
     final int NUMBER_RANGE = 45;
@@ -105,12 +99,3 @@ public class PurchaseService {
     }
 
 }
-
-
-/*
-1. 개수가 들어왔다.
-2. 해당 개수 만큼 로또를 만들어야 한다.
-3. 로또를 만들고 DB에 배치 인서트로 저장한다.
-4. 프론트에 보내 줄 값을 return에서 세팅한다.
-
- */

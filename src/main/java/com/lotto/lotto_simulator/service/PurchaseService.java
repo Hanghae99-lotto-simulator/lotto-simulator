@@ -1,10 +1,11 @@
 package com.lotto.lotto_simulator.service;
 
-
 import com.lotto.lotto_simulator.controller.responseDto.LottosResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.entity.Lotto;;
 import com.lotto.lotto_simulator.entity.Store;
+import com.lotto.lotto_simulator.exception.CustomError;
+import com.lotto.lotto_simulator.exception.CustomException;
 import com.lotto.lotto_simulator.repository.lottorepository.JdbcLottoRepository;
 import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,16 @@ public class PurchaseService {
     @Transactional
     public ResponseDto<?> lottoCreates(Long nums) {
 
+
+        if(!(nums > 0)){
+            throw new CustomException(CustomError.INVALID_PARAMETER);
+        }
+
+        String uniqueCode = UUID.randomUUID().toString().replace("-","");
+
+
         String uniqueCode = getUniqueCode(); // UUID 생성
+
 
         // DB에 insert 시킬 로또 list
         List<Lotto> lottos = new ArrayList<>();

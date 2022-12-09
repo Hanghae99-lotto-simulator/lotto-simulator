@@ -29,19 +29,18 @@ jobs:
         
       - name: make ENV_test
         run: |
-          cd ../../../
           cd ./src/test/resources
           touch ./application.properties
           echo "${{ secrets.APPLICATION_PROPERTIES_TEST }}" > ./application.properties
         shell: bash
         
-      #- name: Setup MySQL
-      #  uses: samin/mysql-action@v1
-      #  with:
-      #    character set server: 'utf8' 
-      #    mysql database: 'lottotest' 
-      #    mysql user: 'jossi'
-      #    mysql password: ${{ secrets.MYSQL_PASSWORD }}
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1
+        with:
+          character set server: 'utf8' 
+          mysql database: 'lottotest' 
+          mysql user: 'jossi'
+          mysql password: ${{ secrets.MYSQL_PASSWORD }}
           
         ## 2) 스프링 프로젝트 jar 파일 빌드
       - name: Grant execute permission for gradlew

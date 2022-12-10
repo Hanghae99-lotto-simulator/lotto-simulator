@@ -2,7 +2,10 @@ package com.lotto.lotto_simulator.repository.lottorepository;
 
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 
+import com.lotto.lotto_simulator.controller.requestDto.LottoIdDto;
 import com.lotto.lotto_simulator.controller.requestDto.QLottoDto;
+import com.lotto.lotto_simulator.controller.requestDto.QLottoIdDto;
+import com.lotto.lotto_simulator.entity.Round;
 import com.lotto.lotto_simulator.entity.QLotto;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
@@ -11,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.lotto.lotto_simulator.entity.QLotto.*;
 import static com.lotto.lotto_simulator.entity.QRound.round;
@@ -90,6 +94,16 @@ public class LottoRepositoryImpl implements LottoRepositoryCustom {
         return queryFactory
                 .select(lotto.lotto_id.count())
                 .from(lotto)
+                .fetchOne();
+    }
+
+    @Override
+    public LottoIdDto countId() {
+        return queryFactory
+                .select(new QLottoIdDto(lotto.lotto_id))
+                .from(lotto)
+                .orderBy(lotto.lotto_id.desc())
+                .limit(1)
                 .fetchOne();
     }
 }

@@ -35,6 +35,10 @@ public class RoundController {
     public CompletableFuture<CompletableFuture<ResponseDto<LankRoundDto>>> lottoWin2(@PathVariable Long num){
         return CompletableFuture.completedFuture(roundService.lottoWinsV3(num));
     }
+    @GetMapping("/lotto-wins-t-V3/{num}")
+    public CompletableFuture<CompletableFuture<ResponseDto<LankRoundDto>>> lottoWinT2(@PathVariable Long num){
+        return CompletableFuture.completedFuture(roundService.lottoWinsV3T(num));
+    }
 
     @GetMapping("/lotto-wins-all")
     public ResponseDto<?> lottoWinAll(){

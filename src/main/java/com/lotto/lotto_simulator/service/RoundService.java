@@ -470,7 +470,7 @@ public class RoundService {
 
         return CompletableFuture.completedFuture(ResponseDto.success(lankRoundDto));
     }
-    public CompletableFuture<ResponseDto<LankRoundDto>> getResponseDtoCompletableFuture(Long roundCount, RoundWinners roundWinners, Round round, List<Byte> rounds) {
+    private CompletableFuture<ResponseDto<LankRoundDto>> getResponseDtoCompletableFuture(Long roundCount, RoundWinners roundWinners, Round round, List<Byte> rounds) {
         LankRoundDto lankRoundDto;
         if(roundWinners.getLottoCnt() == lottoRepository.count()){
             // 기존과 똑같을 경우 그대로 출력
@@ -491,7 +491,7 @@ public class RoundService {
         return null;
     }
 
-    public static int getScore(Round round, byte[] numbers, int score) {
+    private static int getScore(Round round, byte[] numbers, int score) {
         if (score == 5) {
             for (byte number : numbers){
                 if (number == round.getBonus()){
@@ -645,7 +645,7 @@ public class RoundService {
     }
 
 
-    public RankResponseDto lotteryDraw(List<LottoDto> lottoList, Round round, List<Byte> rounds) {
+    private RankResponseDto lotteryDraw(List<LottoDto> lottoList, Round round, List<Byte> rounds) {
 
         // 가져온 로또 더미데이터 하나를 저장하는 배열
         byte[] numbers = new byte[6];

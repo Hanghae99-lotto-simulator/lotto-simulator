@@ -28,8 +28,8 @@ public class AsyncConfig extends AsyncConfigurerSupport {
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(8);
-        executor.setMaxPoolSize(50);
+        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(100);
         executor.setQueueCapacity(100);
         executor.setThreadNamePrefix("async-tread-");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());

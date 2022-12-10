@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.lotto.lotto_simulator.entity.QLotto.*;
+import static com.lotto.lotto_simulator.entity.QRound.round;
 
 
 //queryDsl 쿼리문 짜는 곳
@@ -82,5 +83,12 @@ public class LottoRepositoryImpl implements LottoRepositoryCustom {
                 .from(lotto)
                 .where(booleanTemplate.gt(0))
                 .fetch();
+    }
+    @Override
+    public Long countQuery() {
+        return queryFactory
+                .select(lotto.count())
+                .from(lotto)
+                .fetchOne();
     }
 }

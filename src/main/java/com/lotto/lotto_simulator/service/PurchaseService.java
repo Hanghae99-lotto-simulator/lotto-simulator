@@ -3,12 +3,11 @@ package com.lotto.lotto_simulator.service;
 import com.lotto.lotto_simulator.controller.responseDto.LottosResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.entity.Lotto;;
-import com.lotto.lotto_simulator.entity.Store;
 import com.lotto.lotto_simulator.exception.CustomError;
 import com.lotto.lotto_simulator.exception.CustomException;
 import com.lotto.lotto_simulator.repository.lottorepository.JdbcLottoRepository;
-import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
 import lombok.AllArgsConstructor;
+import org.apache.catalina.Store;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +16,7 @@ import java.util.*;
 @Service
 @AllArgsConstructor
 public class PurchaseService {
-    private final StoreRepository storeRepository;
+
     private final JdbcLottoRepository jdbcLottoRepository;
 
     final int NUMBER_RANGE = 45;
@@ -41,10 +40,6 @@ public class PurchaseService {
         // front에 반환할 여러 개의 로또를 모아놓은 리스트
         List<List<Byte>> lottoList = new ArrayList<>();
 
-        // 전체 로또 판매점 가져오기
-        List<Store> stores = storeRepository.searchAll();
-
-
         for (int i = 0; i < nums; i++) {
 
             // 로또 번호 6개를 랜덤으로 생성하는 메서드
@@ -62,7 +57,6 @@ public class PurchaseService {
                     .fifthNum(lotto.get(4))
                     .sixthNum(lotto.get(5))
                     .uniqueCode(uniqueCode)
-                    .store(stores.get((int) (Math.random() * stores.size())))
                     .build();
 
             // DB애 넣을 로또 리스트

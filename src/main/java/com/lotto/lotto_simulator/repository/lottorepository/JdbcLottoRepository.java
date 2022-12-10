@@ -17,8 +17,8 @@ public class JdbcLottoRepository {
 
         public void batchInsertLottos(List<Lotto> lottos) {
             String sql = "INSERT INTO lotto " +
-                    "(first_num, second_num, third_num, fourth_num, fifth_num, sixth_num, unique_code, store_id) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    "(first_num, second_num, third_num, fourth_num, fifth_num, sixth_num, unique_code) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
             jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
             @Override
@@ -32,7 +32,7 @@ public class JdbcLottoRepository {
                 ps.setLong(5, lotto.getFifthNum());
                 ps.setLong(6, lotto.getSixthNum());
                 ps.setString(7,lotto.getUniqueCode());
-                ps.setLong(8, lotto.getStore().getId());
+                //ps.setLong(8, lotto.getStore().getId());
             }
 
             @Override

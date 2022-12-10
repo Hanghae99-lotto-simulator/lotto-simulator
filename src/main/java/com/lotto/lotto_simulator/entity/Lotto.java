@@ -41,8 +41,5 @@ public class Lotto {
     @Column(nullable = false)
     private Byte sixthNum;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name="store_id")
-    private Store store;
 
 }

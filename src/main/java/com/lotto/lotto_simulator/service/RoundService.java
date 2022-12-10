@@ -394,7 +394,7 @@ public class RoundService {
         return CompletableFuture.completedFuture(ResponseDto.success(lankRoundDto));
     }
     @Transactional
-    public CompletableFuture<ResponseDto<LankRoundDto>> lottoWinsV3T(Long num) {
+    public ResponseDto<LankRoundDto> lottoWinsV3T(Long num) {
 
         LankRoundDto lankRoundDto;
         Long roundCount = roundRepository.countQuery();
@@ -411,8 +411,22 @@ public class RoundService {
         // 기존에 조회 했었던 회차인지 확인
         if(roundWinners != null){
             // 기존에 조회했을때보다 데이터가 더 많아졌는지 확인
-            CompletableFuture<ResponseDto<LankRoundDto>> lankRoundDto1 = getResponseDtoCompletableFuture(roundCount, roundWinners, round, rounds);
-            if (lankRoundDto1 != null) return lankRoundDto1;
+            if(roundWinners.getLottoCnt() == lottoRepository.count()){
+                // 기존과 똑같을 경우 그대로 출력
+                lankRoundDto = LankRoundDto.builder()
+                        .id(round.getId())
+                        .Count(roundCount)
+                        .BonusNum(round.getBonus())
+                        .date(round.getDate())
+                        .RoundArray(rounds)
+                        .firstRank((int)(long)(roundWinners.getFirstRank()))
+                        .secondRank((int)(long)(roundWinners.getSecondRank()))
+                        .thirdRank((int)(long)(roundWinners.getThirdRank()))
+                        .fourthRank((int)(long)(roundWinners.getFourthRank()))
+                        .fifthRank((int)(long)(roundWinners.getFifthRank()))
+                        .build();
+                return ResponseDto.success(lankRoundDto);
+            }
             // 기존보다 데이터가 많아졌을 경우 previousCount에 기존 데이터 수 저장
             previousCount = roundWinners.getLottoCnt();
         }
@@ -468,7 +482,7 @@ public class RoundService {
         // 당첨자 수 데이터를 재사용하기 위해 저장
         roundWinnersRepository.save(roundWinners);
 
-        return CompletableFuture.completedFuture(ResponseDto.success(lankRoundDto));
+        return ResponseDto.success(lankRoundDto);
     }
     private CompletableFuture<ResponseDto<LankRoundDto>> getResponseDtoCompletableFuture(Long roundCount, RoundWinners roundWinners, Round round, List<Byte> rounds) {
         LankRoundDto lankRoundDto;

@@ -323,6 +323,7 @@ public class RoundService {
         Long roundCount = roundRepository.countQuery();
         RoundWinners roundWinners = roundWinnersRepository.findById(num).orElse(null);
         Round round = roundRepository.findByRound(num).orElseThrow();
+
         long previousCount = 0;
 
 
@@ -400,6 +401,7 @@ public class RoundService {
         Long roundCount = roundRepository.countQuery();
         RoundWinners roundWinners = roundWinnersRepository.findById(num).orElse(null);
         Round round = roundRepository.findByRound(num).orElseThrow();
+        Long lottoCnt= lottoRepository.countQuery();
         long previousCount = 0;
 
 
@@ -411,7 +413,7 @@ public class RoundService {
         // 기존에 조회 했었던 회차인지 확인
         if(roundWinners != null){
             // 기존에 조회했을때보다 데이터가 더 많아졌는지 확인
-            if(roundWinners.getLottoCnt() == lottoRepository.count()){
+            if(roundWinners.getLottoCnt().equals(lottoCnt)){
                 // 기존과 똑같을 경우 그대로 출력
                 lankRoundDto = LankRoundDto.builder()
                         .id(round.getId())
@@ -486,7 +488,8 @@ public class RoundService {
     }
     private CompletableFuture<ResponseDto<LankRoundDto>> getResponseDtoCompletableFuture(Long roundCount, RoundWinners roundWinners, Round round, List<Byte> rounds) {
         LankRoundDto lankRoundDto;
-        if(roundWinners.getLottoCnt() == lottoRepository.count()){
+        Long lottoCnt= lottoRepository.countQuery();
+        if(roundWinners.getLottoCnt().equals(lottoCnt)){
             // 기존과 똑같을 경우 그대로 출력
             lankRoundDto = LankRoundDto.builder()
                     .id(round.getId())

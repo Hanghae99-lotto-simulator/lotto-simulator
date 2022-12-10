@@ -3,6 +3,7 @@ package com.lotto.lotto_simulator.repository.lottorepository;
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 
 import com.lotto.lotto_simulator.controller.requestDto.QLottoDto;
+import com.lotto.lotto_simulator.entity.QLotto;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -87,7 +88,7 @@ public class LottoRepositoryImpl implements LottoRepositoryCustom {
     @Override
     public Long countQuery() {
         return queryFactory
-                .select(lotto.count())
+                .select(lotto.lotto_id.count())
                 .from(lotto)
                 .fetchOne();
     }

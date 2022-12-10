@@ -3,12 +3,9 @@ package com.lotto.lotto_simulator.service;
 import com.lotto.lotto_simulator.controller.responseDto.LottosResponseDto;
 import com.lotto.lotto_simulator.controller.responseDto.ResponseDto;
 import com.lotto.lotto_simulator.entity.Lotto;
-import com.lotto.lotto_simulator.entity.Store;
 import com.lotto.lotto_simulator.exception.CustomException;
-import com.lotto.lotto_simulator.repository.lottocombinationrepository.LottoCombinationRepository;
 import com.lotto.lotto_simulator.repository.lottorepository.JdbcLottoRepository;
 import com.lotto.lotto_simulator.repository.lottorepository.LottoRepository;
-import com.lotto.lotto_simulator.repository.storerpository.StoreRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,12 +14,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,8 +25,6 @@ class PurchaseServiceTest {
 
     @Mock
     private LottoRepository lottoRepository;
-    @Mock
-    private StoreRepository storeRepository;
 
     @Mock
     private JdbcLottoRepository jdbcLottoRepository;
@@ -60,12 +53,6 @@ class PurchaseServiceTest {
         // 프론트에 반환하기 위해 만든 로또 리스트
         List<List<Byte>> lottoList = List.of(lotto);
 
-        Store store = Store.builder()
-                .lotAddress("위치")
-                .roadAddress("도로명")
-                .storeName("스토어이름")
-                .build();
-
         Lotto game = Lotto.builder()
                 .firstNum(lotto.get(0))
                 .secondNum(lotto.get(1))
@@ -74,7 +61,6 @@ class PurchaseServiceTest {
                 .fifthNum(lotto.get(4))
                 .sixthNum(lotto.get(5))
                 .uniqueCode(uniqueCode)
-                .store(store)
                 .build();
         List<Lotto> lottos = List.of(game);
 
@@ -84,7 +70,7 @@ class PurchaseServiceTest {
                 .build();
 
         // when
-        when(storeRepository.searchAll()).thenReturn(List.of(store));
+
 //        when(lottoRepository.saveAll(lottos)).thenReturn(Arrays.asList(lottos));
 
 
@@ -107,7 +93,7 @@ class PurchaseServiceTest {
         int status = 406;
         String code = "M001";
         String message = "1 이상의 수만 입력할 수 있습니다.";
-        Store store = Store.builder().build();
+
 
 
         // when

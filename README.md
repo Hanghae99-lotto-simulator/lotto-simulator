@@ -21,6 +21,10 @@
 </p>
 </div>
 
+### 프론트엔드
+ - <img src="https://img.shields.io/badge/조정민-609926?style=for-the-badge&logo=Spring&logoColor=white"/>  <a href="https://github.com/jossiya">
+         <img src="https://img.shields.io/badge/jossiya_GitHub-609926?style=for-the-badge&logo=github&logoColor=white"/> </a>
+         
 ### 백엔드
 
 - <img src="https://img.shields.io/badge/조정민-609926?style=for-the-badge&logo=Spring&logoColor=white"/>  <a href="https://github.com/jossiya">

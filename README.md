@@ -1,5 +1,8 @@
 # lotto-simulator
 ![로또 시뮬레이터 로그](https://user-images.githubusercontent.com/96179069/206896075-23157209-30c6-45bf-8f8a-e908ccd5ec7c.png)
+#프로젝트 소개
+##간단하게 로또를 구매하고 회차를 통해 자신의 등수를 확인 할 수 있습니다.
+
 <div align=center>
   <h3 align="center"><b>🛠 Tech Stack 🛠</b></h3>
 <p>

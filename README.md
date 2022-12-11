@@ -4,6 +4,9 @@
 # ✋프로젝트 소개
 ### 간단하게 로또를 구매하고, 회차를 통해 자신의 등수를 확인 할 수 있습니다.
 
+# ✋아키텍쳐
+![아키텍처 설계도](https://user-images.githubusercontent.com/96179069/206906499-c58982b5-5106-4f53-a5eb-96f888d64d2e.png)
+
 <div align=center>
   <h3 align="center"><b>🛠 Tech Stack 🛠</b></h3>
 <p>

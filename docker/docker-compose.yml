@@ -16,11 +16,19 @@ services:
       - ./db/mysql/init:/docker-entrypoint-initdb.d
 
   lottoSimulator:
-    image: rolety2202/lottosimulator
+    image: rolety2202/lottosimulator:latest
     container_name: lottosimulator
     restart: always
     ports:
       - "8080:8080"
+   # volumes:
+     # - ~/application-log:/application-log
+    deploy:
+      resources:
+        limits:
+          memory: 10240M
+        reservations:
+          memory: 2048M
 
   Prometheus:
     image: prom/prometheus
@@ -65,6 +73,18 @@ services:
       - DATA_SOURCE_NAME=exporter:ht3zXqEQVWju2X@(jossiya:3306)/
     ports:
       - 9104:9104
+
+  nginx:
+    image: nginx:1.21.5-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    container_name: myweb-proxy
+    depends_on:
+      - lottoSimulator
+
+
 
   dozzle:
     container_name: dozzle

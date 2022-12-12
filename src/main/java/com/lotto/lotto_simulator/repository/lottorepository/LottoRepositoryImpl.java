@@ -5,8 +5,7 @@ import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 import com.lotto.lotto_simulator.controller.requestDto.LottoIdDto;
 import com.lotto.lotto_simulator.controller.requestDto.QLottoDto;
 import com.lotto.lotto_simulator.controller.requestDto.QLottoIdDto;
-import com.lotto.lotto_simulator.entity.Round;
-import com.lotto.lotto_simulator.entity.QLotto;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.lotto.lotto_simulator.entity.QLotto.*;
+import static org.springframework.util.ObjectUtils.isEmpty;
 import static com.lotto.lotto_simulator.entity.QRound.round;
 
 
@@ -73,10 +73,9 @@ public class LottoRepositoryImpl implements LottoRepositoryCustom {
 
     @Override
     public List<LottoDto> fullTextSearch(String uniqueCode) {
+
 //        NumberTemplate booleanTemplate = Expressions.numberTemplate(Double.class,
-//                "function('match',{0},{1})", lotto.uniqueCode, "+" + uniqueCode + "*");
-        NumberTemplate booleanTemplate = Expressions.numberTemplate(Double.class,
-                "function('match',{0},{1})", lotto.uniqueCode, uniqueCode);
+//                "function('match',{0},{1})", lotto.uniqueCode, uniqueCode);
 
         return queryFactory.select(new QLottoDto(
                 lotto.firstNum,
@@ -86,8 +85,14 @@ public class LottoRepositoryImpl implements LottoRepositoryCustom {
                 lotto.fifthNum,
                 lotto.sixthNum))
                 .from(lotto)
-                .where(booleanTemplate.gt(0))
+                .where(getUniqueCode(uniqueCode))
                 .fetch();
+    }
+
+    private BooleanExpression getUniqueCode(String uniqueCode) {
+        NumberTemplate booleanTemplate = Expressions.numberTemplate(Double.class,
+                "function('match',{0},{1})", lotto.uniqueCode, "+" + uniqueCode + "*");
+        return isEmpty(uniqueCode) ? null : booleanTemplate.gt(0);
     }
     @Override
     public Long countQuery() {

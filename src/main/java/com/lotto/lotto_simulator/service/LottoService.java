@@ -121,6 +121,10 @@ public class LottoService {
     @Transactional(readOnly = true)
     public ResponseDto<?> lottoInfos(Long num, String uniqueCode) {
 
+        if(uniqueCode.isEmpty()){
+            throw new CustomException(CustomError.UNIQUE_CODE_NULL);
+        }
+
         // 매개변수로 들어온 유니크 코드를 가지고 있는 Lotto 전부 가져오기
         List<LottoDto> lottoList = lottoRepository.fullTextSearch(uniqueCode.replace(" ",""));
 

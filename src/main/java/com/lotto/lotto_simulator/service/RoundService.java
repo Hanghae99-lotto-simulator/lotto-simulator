@@ -489,9 +489,9 @@ public class RoundService {
     private CompletableFuture<ResponseDto<LankRoundDto>> getResponseDtoCompletableFuture(Long roundCount, RoundWinners roundWinners, Round round, List<Byte> rounds) {
         LankRoundDto lankRoundDto;
 
-//        Long lottoCnt= lottoRepository.countId().getLotto_id();
+        Long lottoCnt= lottoRepository.countId().getLotto_id();
 
-        Long lottoCnt= lottoRepository.countQuery();
+//        Long lottoCnt= lottoRepository.countQuery();
         //System.out.println("lottoCnt = " + lottoCnt);
 
 //        Long lottoCnt = 1979301L;

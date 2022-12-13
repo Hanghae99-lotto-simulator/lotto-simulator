@@ -91,7 +91,7 @@ public class PurchaseService {
 
     // UUID를 통한 랜덤 uniqueCode 생성
     private String getUniqueCode(){
-        return UUID.randomUUID().toString().replace("-"," ");
+        return UUID.randomUUID().toString().replace("-","");
     }
 
     // 난수 생성 메서드

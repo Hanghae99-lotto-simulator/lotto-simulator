@@ -123,8 +123,8 @@ public class LottoService {
     public ResponseDto<?> lottoInfos(Long num, String uniqueCode) {
 
         // 매개변수로 들어온 유니크 코드를 가지고 있는 Lotto 전부 가져오기
-//        List<LottoDto> lottoList = lottoRepository.fullTextSearch(uniqueCode.replace(" ",""));
-        List<Lotto> lottoList = lottoRepository.fullTextSearchV2(uniqueCode.replace(" ",""));
+        List<LottoDto> lottoList = lottoRepository.fullTextSearch(uniqueCode.replace(" ",""));
+//        List<Lotto> lottoList = lottoRepository.fullTextSearchV2(uniqueCode.replace(" ",""));
         // 매개변수로 들어온 유니크코드를 가지고 있는 로또 데이터가 몇 개 인지
         int totalCnt = lottoList.size();
 
@@ -146,7 +146,7 @@ public class LottoService {
 
         List<List<Byte>> singleLottoNum = new ArrayList<>();
 
-        for (Lotto l : lottoList) {
+        for (LottoDto l : lottoList) {
             List<Byte> lottoNum = new ArrayList<>();
             lottoNum.add(l.getFirstNum());
             lottoNum.add(l.getSecondNum());

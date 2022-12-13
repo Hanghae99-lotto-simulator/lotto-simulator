@@ -2,6 +2,7 @@ package com.lotto.lotto_simulator.service;
 
 import com.lotto.lotto_simulator.controller.requestDto.LottoDto;
 import com.lotto.lotto_simulator.controller.responseDto.*;
+import com.lotto.lotto_simulator.entity.Lotto;
 import com.lotto.lotto_simulator.entity.Round;
 import com.lotto.lotto_simulator.exception.CustomError;
 import com.lotto.lotto_simulator.exception.CustomException;
@@ -121,13 +122,9 @@ public class LottoService {
     @Transactional(readOnly = true)
     public ResponseDto<?> lottoInfos(Long num, String uniqueCode) {
 
-        if(uniqueCode.isEmpty()){
-            throw new CustomException(CustomError.UNIQUE_CODE_NULL);
-        }
-
         // 매개변수로 들어온 유니크 코드를 가지고 있는 Lotto 전부 가져오기
-        List<LottoDto> lottoList = lottoRepository.fullTextSearch(uniqueCode.replace(" ",""));
-
+//        List<LottoDto> lottoList = lottoRepository.fullTextSearch(uniqueCode.replace(" ",""));
+        List<Lotto> lottoList = lottoRepository.fullTextSearchV2(uniqueCode.replace(" ",""));
         // 매개변수로 들어온 유니크코드를 가지고 있는 로또 데이터가 몇 개 인지
         int totalCnt = lottoList.size();
 
@@ -149,7 +146,7 @@ public class LottoService {
 
         List<List<Byte>> singleLottoNum = new ArrayList<>();
 
-        for (LottoDto l : lottoList) {
+        for (Lotto l : lottoList) {
             List<Byte> lottoNum = new ArrayList<>();
             lottoNum.add(l.getFirstNum());
             lottoNum.add(l.getSecondNum());

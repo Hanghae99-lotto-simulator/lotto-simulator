@@ -402,6 +402,7 @@ public class RoundService {
         RoundWinners roundWinners = roundWinnersRepository.findById(num).orElse(null);
         Round round = roundRepository.findByRound(num).orElseThrow();
         Long lottoCnt = lottoRepository.countQuery();
+        Long lottoCnts= lottoRepository.countId().getLotto_id();
         long previousCount = 0;
 
 
@@ -413,7 +414,7 @@ public class RoundService {
         // 기존에 조회 했었던 회차인지 확인
         if(roundWinners != null){
             // 기존에 조회했을때보다 데이터가 더 많아졌는지 확인
-            if(roundWinners.getLottoCnt() == lottoRepository.count()){
+            if(roundWinners.getLottoCnt() == lottoCnts){
                 // 기존과 똑같을 경우 그대로 출력
                 lankRoundDto = LankRoundDto.builder()
                         .id(round.getId())

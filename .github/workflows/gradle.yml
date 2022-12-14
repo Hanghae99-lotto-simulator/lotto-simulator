@@ -11,7 +11,7 @@ permissions:
 jobs:
   test:
     uses: ./.github/workflows/gradle_test.yml
-    secrets:
+    #secrets:
       #APPLICATION_TEST: ${{ secrets.APPLICATION_TEST }}
 
   build:

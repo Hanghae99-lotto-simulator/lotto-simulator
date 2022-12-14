@@ -12,7 +12,7 @@ jobs:
   test:
     uses: ./.github/workflows/gradle_test.yml
     secrets:
-      APPLICATION_TEST: ${{ secrets.APPLICATION_TEST }}
+      APPLICATION_PROPERTIES_TEST: ${{ secrets.APPLICATION_PROPERTIES_TEST }}
   
   build:
     runs-on: ubuntu-latest

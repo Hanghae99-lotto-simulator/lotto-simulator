@@ -7,9 +7,9 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_USER: jossi
-      MYSQL_PASSWORD: 1223
-      MYSQL_ROOT_PASSWORD: 1223
+      MYSQL_USER: {mysql_id}
+      MYSQL_PASSWORD: {mysql_password}
+      MYSQL_ROOT_PASSWORD: {mysql_password}
       TZ: Asia/Seoul
     volumes:
       - ./db/mysql/data:/var/lib/mysql

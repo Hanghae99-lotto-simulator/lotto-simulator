@@ -26,51 +26,30 @@ public class PurchaseService {
     @Transactional
     public ResponseDto<?> lottoCreates(Long nums) {
 
-
         if(!(nums > 0)){
             throw new CustomException(CustomError.INVALID_PARAMETER);
         }
 
         String uniqueCode = getUniqueCode(); // UUID 생성
 
-
-        // DB에 insert 시킬 로또 list
-        List<Lotto> lottos = new ArrayList<>();
-
-        // front에 반환할 여러 개의 로또를 모아놓은 리스트
-        List<List<Byte>> lottoList = new ArrayList<>();
+        List<Lotto> lottoList = new ArrayList<>();
+        List<List<Byte>> responseLottoList = new ArrayList<>();
 
         for (int i = 0; i < nums; i++) {
 
-            // 로또 번호 6개를 랜덤으로 생성하는 메서드
             List<Byte> lotto = getLotto();
-
-
-            //정렬
             Collections.sort(lotto);
+            Lotto game = toEntity(lotto, uniqueCode);
 
-            Lotto game = Lotto.builder()
-                    .firstNum(lotto.get(0))
-                    .secondNum(lotto.get(1))
-                    .thirdNum(lotto.get(2))
-                    .fourthNum(lotto.get(3))
-                    .fifthNum(lotto.get(4))
-                    .sixthNum(lotto.get(5))
-                    .uniqueCode(uniqueCode)
-                    .build();
-
-            // DB애 넣을 로또 리스트
-            lottos.add(game);
-
-            // 반환할 로또 리스트
-            lottoList.add(lotto);
+            lottoList.add(game);
+            responseLottoList.add(lotto);
         }
 
         // JDBC_TEMPLATE을 이용한 batch insert
-        jdbcLottoRepository.batchInsertLottos(lottos);
+        jdbcLottoRepository.batchInsertLottos(lottoList);
 
         LottosResponseDto lottosResponseDto = LottosResponseDto.builder()
-                                              .lottoArray(lottoList)
+                                              .lottoArray(responseLottoList)
                                               .uniqueCode(uniqueCode)
                                               .build();
 
@@ -97,6 +76,20 @@ public class PurchaseService {
     // 난수 생성 메서드
     private int getRandomNum(int num){
         return (int) ((Math.random() * num) + 1);
+    }
+
+    private Lotto toEntity(List<Byte> lottoNum, String uniqueCode){
+        Lotto lotto = Lotto.builder()
+                .firstNum(lottoNum.get(0))
+                .secondNum(lottoNum.get(1))
+                .thirdNum(lottoNum.get(2))
+                .fourthNum(lottoNum.get(3))
+                .fifthNum(lottoNum.get(4))
+                .sixthNum(lottoNum.get(5))
+                .uniqueCode(uniqueCode)
+                .build();
+
+        return lotto;
     }
 
 }

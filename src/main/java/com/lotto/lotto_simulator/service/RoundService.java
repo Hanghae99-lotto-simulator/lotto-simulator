@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -251,59 +252,21 @@ public class RoundService {
     @Scheduled(cron = "* * 0 * * 7" )
     public ResponseDto<?> newestWinningNums() {
 
-        // Round 테이블의 데이터 개수 반환
         long num = roundRepository.countQuery() + 1;
-
-        // api에 받아올 원본 데이터 담을 변수
         String result = " ";
-
         try{
 
-            // URL 객체를 통해서 url을 연결, API 주소에에매개변수로 들어온 num(회차) 추가
             String apiUrl = "https://www.dhlottery.co.kr/common.do?" +
                     "method=getLottoNumber" +
                     "&drwNo=" + num;
 
             URL url = new URL(apiUrl);
-
             BufferedReader br;
-
-            // 원본 데이터들을 모두 버퍼에 저장해서 하나의 데이터로 만듬
             br = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-
             result = br.readLine();
 
-            // 필요한 값들 parsing
-            JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
-            Byte drwtNo1 = Byte.parseByte(String.valueOf(jsonObject.get("drwtNo1")));
-            Byte drwtNo2 = Byte.parseByte(String.valueOf(jsonObject.get("drwtNo2")));
-            Byte drwtNo3 = Byte.parseByte(String.valueOf(jsonObject.get("drwtNo3")));
-            Byte drwtNo4 = Byte.parseByte(String.valueOf(jsonObject.get("drwtNo4")));
-            Byte drwtNo5 = Byte.parseByte(String.valueOf(jsonObject.get("drwtNo5")));
-            Byte drwtNo6 = Byte.parseByte(String.valueOf(jsonObject.get("drwtNo6")));
-            Byte bnusNo = Byte.parseByte(String.valueOf(jsonObject.get("bnusNo")));
-            String date = String.valueOf(jsonObject.get("drwNoDate"));
-            date += " 00:00:00.000";
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-            LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
-
-
             log.info("잘 되었네요");
-
-            // parsing한 값으로 Round 객체 생상
-            Round round = Round.builder()
-                    .num1(drwtNo1)
-                    .num2(drwtNo2)
-                    .num3(drwtNo3)
-                    .num4(drwtNo4)
-                    .num5(drwtNo5)
-                    .num6(drwtNo6)
-                    .date(dateTime)
-                    .bonus(bnusNo)
-                    .build();
-
-            roundRepository.save(round);
+            roundRepository.save(parseJsonToRound(result));
 
             return ResponseDto.success("success");
 
@@ -716,6 +679,51 @@ public class RoundService {
                 .thirdRank(thirdRank)
                 .fourthRank(fourthRank)
                 .fifthRank(fifthRank)
+                .build();
+    }
+
+    private Round parseJsonToRound(String result) throws ParseException {
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+        List<Byte> numList = toNumList(jsonObject);
+        LocalDateTime time = parseTime(jsonObject);
+        return toRoundEntity(numList, time);
+    }
+
+    private List<Byte> toNumList(JSONObject jsonObject){
+        List<Byte> numList = new ArrayList<Byte>();
+        numList.add(Byte.parseByte(String.valueOf(jsonObject.get("drwNo1"))));
+        numList.add(Byte.parseByte(String.valueOf(jsonObject.get("drwtNo2"))));
+        numList.add(Byte.parseByte(String.valueOf(jsonObject.get("drwtNo3"))));
+        numList.add(Byte.parseByte(String.valueOf(jsonObject.get("drwtNo4"))));
+        numList.add(Byte.parseByte(String.valueOf(jsonObject.get("drwtNo5"))));
+        numList.add(Byte.parseByte(String.valueOf(jsonObject.get("drwtNo6"))));
+        numList.add(Byte.parseByte(String.valueOf(jsonObject.get("bnusNo"))));
+
+        return numList;
+    }
+
+    private LocalDateTime parseTime(JSONObject jsonObject) {
+
+        String date = String.valueOf(jsonObject.get("drwNoDate"));
+        date += " 00:00:00.000";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
+        return LocalDateTime.parse(date, formatter);
+    }
+
+    private Round toRoundEntity(List<Byte> numList, LocalDateTime time){
+
+        return Round.builder()
+                .num1(numList.get(0))
+                .num2(numList.get(1))
+                .num3(numList.get(2))
+                .num4(numList.get(3))
+                .num5(numList.get(4))
+                .num6(numList.get(5))
+                .bonus(numList.get(6))
+                .date(time)
                 .build();
     }
 

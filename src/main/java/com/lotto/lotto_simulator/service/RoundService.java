@@ -682,6 +682,7 @@ public class RoundService {
                 .build();
     }
 
+    // open API 로또 정보를 Round로 변환
     private Round parseJsonToRound(String result) throws ParseException {
 
         JSONParser jsonParser = new JSONParser();
@@ -691,6 +692,7 @@ public class RoundService {
         return toRoundEntity(numList, time);
     }
 
+    // JSON 형식의 당첨번호를 List에 저장
     private List<Byte> toNumList(JSONObject jsonObject){
         List<Byte> numList = new ArrayList<Byte>();
         numList.add(Byte.parseByte(String.valueOf(jsonObject.get("drwNo1"))));
@@ -704,6 +706,7 @@ public class RoundService {
         return numList;
     }
 
+    // JSON 형식의 시간 정보를 DB에 저장하기 위해 LocalDateTime으로 변환
     private LocalDateTime parseTime(JSONObject jsonObject) {
 
         String date = String.valueOf(jsonObject.get("drwNoDate"));
@@ -713,6 +716,7 @@ public class RoundService {
         return LocalDateTime.parse(date, formatter);
     }
 
+    // openAPI에서 받아온 정보로 Round 객체 생성
     private Round toRoundEntity(List<Byte> numList, LocalDateTime time){
 
         return Round.builder()

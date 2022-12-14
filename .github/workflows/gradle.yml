@@ -74,7 +74,7 @@ jobs:
   
   deploy-pro:
     name: Deploy-pro
-    needs: build
+    needs: deploy-dev
     runs-on: ubuntu-latest
     steps:     
       - name: Deploy

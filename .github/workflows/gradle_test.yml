@@ -1,15 +1,13 @@
 name: Gradle test 
 
 on:
-  push:
-    branches:  [ "master" ]
   workflow_call:
     secrets:
       APPLICATION_PROPERTIES_TEST:
         required: true
         
 jobs:
-  biuld:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

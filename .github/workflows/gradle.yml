@@ -32,13 +32,6 @@ jobs:
           touch ./application.properties
           echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./application.properties
         shell: bash
-        
-      - name: make ENV_test
-        run: |
-          cd ./src/test/resources
-          touch ./application.properties
-          echo "${{ secrets.APPLICATION_PROPERTIES_TEST }}" > ./application.properties
-        shell: bash
           
         ## 2) 스프링 프로젝트 jar 파일 빌드
       - name: Grant execute permission for gradlew
@@ -59,6 +52,31 @@ jobs:
           docker build -t rolety2202/lottosimulator .
           docker push rolety2202/lottosimulator
         ## 4) Docker Hub에 Push한 이미지를 리눅스 서버에 받아와서 run
+        
+        
+  deploy-dev:
+    name: Deploy-dev
+    needs: build
+    runs-on: ubuntu-latest
+    steps:     
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_HOST_ADDRESS }}
+          username: root
+          password: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 40022
+          envs: GITHUB_SHA
+          script: |
+            cd docker
+            docker pull rolety2202/lottosimulator:latest
+            docker-compose up -d lottoSimulator-dev
+  
+  deploy-pro:
+    name: Deploy-pro
+    needs: build
+    runs-on: ubuntu-latest
+    steps:     
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -71,6 +89,4 @@ jobs:
             cd docker
             docker pull rolety2202/lottosimulator:latest
             docker-compose up -d lottoSimulator
-            ## docker stop lottosimulator
-            ## docker rm lottosimulator
-            ## docker run -d --rm --name lottosimulator -p 8080:8080 rolety2202/lottosimulator
+

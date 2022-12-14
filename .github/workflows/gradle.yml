@@ -11,9 +11,9 @@ permissions:
 jobs:
   test:
     uses: ./.github/workflows/gradle_test.yml
-    #secrets:
-      #APPLICATION_TEST: ${{ secrets.APPLICATION_TEST }}
-
+    secrets:
+      APPLICATION_TEST: ${{ secrets.APPLICATION_TEST }}
+  
   build:
     runs-on: ubuntu-latest
     steps:

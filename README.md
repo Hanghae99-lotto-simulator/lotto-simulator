@@ -6,7 +6,7 @@
 
 # ✋아키텍처 설계도
 ![아키텍처 설계도](https://user-images.githubusercontent.com/96179069/206906499-c58982b5-5106-4f53-a5eb-96f888d64d2e.png)
-# 노션 <a href="https://www.notion.so/09e6e369df9c443cb3a712b6ecb37688">LottoSimulator</a>
+# ✋노션 <a href="https://www.notion.so/09e6e369df9c443cb3a712b6ecb37688">LottoSimulator</a>
 <div align=center>
   <h3 align="center"><b>🛠 Tech Stack 🛠</b></h3>
 <p>

@@ -13,7 +13,9 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table(name="lotto",indexes = {
         @Index(name = "lotto_num_idx"
-                , columnList = "lotto_id, firstNum, secondNum, thirdNum, fourthNum, fifthNum, sixthNum")
+                    , columnList = "lotto_id, firstNum, secondNum, thirdNum, fourthNum, fifthNum, sixthNum,")
+        ,@Index(name = "unique_code_idx"
+                    , columnList = "uniqueCode")
 })
 public class Lotto {
     @Id

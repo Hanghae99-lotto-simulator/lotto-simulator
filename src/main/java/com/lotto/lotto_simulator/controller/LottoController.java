@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class LottoController {
     private final LottoService lottoService;
 
-    //feature/uniqueCodeSearch
-
     @GetMapping("/lottos/info")
     public ResponseDto<?> lottoInfo(@RequestParam Long num,
                                     @RequestParam String uniqueCode) {

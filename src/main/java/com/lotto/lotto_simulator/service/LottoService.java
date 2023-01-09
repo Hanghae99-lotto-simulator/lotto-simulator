@@ -24,8 +24,6 @@ public class LottoService {
     private final RoundRepository roundRepository;
 
 
-
-
     @Transactional(readOnly = true)
     public ResponseDto<?> winningNum(Pageable pageable) {
         Page<Round> winningNum = roundRepository.pageable(pageable);
@@ -37,98 +35,64 @@ public class LottoService {
     public ResponseDto<?> lottoInfo(Long num, String uniqueCode) {
 
         // 매개변수로 들어온 유니크 코드를 가지고 있는 Lotto 전부 가져오기
-        List<LottoDto> lottoList = lottoRepository.uniqueCodeSearch(uniqueCode.replace(" ",""));
+        List<LottoDto> lottoList = lottoRepository.uniqueCodeSearch(uniqueCode.replace(" ", ""));
 
         // 매개변수로 들어온 유니크코드를 가지고 있는 로또 데이터가 몇 개 인지
         int totalCnt = lottoList.size();
 
         // num라운드의 당첨번호 정보를 가져온다.
-        Round round = roundRepository.findByRound(num).orElseThrow();
-        List<Byte> rounds = new ArrayList<>();
-        rounds.add(round.getNum1());
-        rounds.add(round.getNum2());
-        rounds.add(round.getNum3());
-        rounds.add(round.getNum4());
-        rounds.add(round.getNum5());
-        rounds.add(round.getNum6());
+        Round round = roundRepository.findByRound(num).orElseThrow(() -> new CustomException(CustomError.ROUND_NOT_FOUND));
+        List<Byte> rounds = getRoundNum(round, num);
 
 
-        List<List<Byte>> singleLottoNum = new ArrayList<>();
-        List<Byte> lottoNum=null;
-        for (LottoDto l : lottoList) {
-            lottoNum= new ArrayList<>();
-            lottoNum.add(l.getFirstNum());
-            lottoNum.add(l.getSecondNum());
-            lottoNum.add(l.getThirdNum());
-            lottoNum.add(l.getFourthNum());
-            lottoNum.add(l.getFifthNum());
-            lottoNum.add(l.getSixthNum());
-            singleLottoNum.add(lottoNum);
-
-        }
-        int firstRank = 0;
-        int secondRank = 0;
-        int thirdRank = 0;
-        int fourthRank = 0;
-        int fifthRank = 0;
+        List<List<Byte>> singleLottoNum = getSingleLottoNum(lottoList);
 
         // 등수와 당첨번호를 모아넣는 Map
         List<List<Byte>> firstList = new ArrayList<>();
         List<List<Byte>> secondList = new ArrayList<>();
         List<List<Byte>> thirdList = new ArrayList<>();
-        HashMap<Byte, Integer> map=null;
+
+        int fourthRank = 0;
+        int fifthRank = 0;
+
         for (List<Byte> l : singleLottoNum) {
-            map= new HashMap<>();
-            for (Byte value : rounds) {
-                map.put(value, map.getOrDefault(value, 0) + 1);
-            }
-            for (Byte aByte : l) {
-                map.put(aByte, map.getOrDefault(aByte, 0) - 1);
-            }
+            HashMap<Byte, Integer> numberCountMap = getNumberCountMap(l, rounds);
+            int cnt = getWrongCount(numberCountMap);
 
-
-            int cnt = 0;
-            for (Byte key : map.keySet()) {
-                if (map.get(key) > 0) {
-                    cnt++;
-                }
-            }
             if (cnt == 0) {
-                firstRank++;
                 firstList.add(l);
             } else if (cnt == 1 && l.contains(round.getBonus())) {
-                secondRank++;
                 secondList.add(l);
             } else if (cnt == 1) {
-                thirdRank++;
                 thirdList.add(l);
             } else if (cnt == 2) {
                 fourthRank++;
             } else if (cnt == 3) {
                 fifthRank++;
             }
+
         }
 
         return ResponseDto.success(GambleDto.builder()
-                        .firstList(firstList)
-                        .secondList(secondList)
-                        .thirdList(thirdList)
-                        .fourthRank((long) fourthRank)
-                        .fifthRank((long) fifthRank)
-                        .totalCnt(totalCnt)
-                        .build());
-        }
+                .firstList(firstList)
+                .secondList(secondList)
+                .thirdList(thirdList)
+                .fourthRank((long) fourthRank)
+                .fifthRank((long) fifthRank)
+                .totalCnt(totalCnt)
+                .build());
+    }
 
     @Transactional(readOnly = true)
     public ResponseDto<?> lottoInfos(Long num, String uniqueCode) {
 
         // 매개변수로 들어온 유니크 코드를 가지고 있는 Lotto 전부 가져오기
-        List<LottoDto> lottoList = lottoRepository.fullTextSearch(uniqueCode.replace(" ",""));
+        List<LottoDto> lottoList = lottoRepository.fullTextSearch(uniqueCode.replace(" ", ""));
 //        List<Lotto> lottoList = lottoRepository.fullTextSearchV2(uniqueCode.replace(" ",""));
         // 매개변수로 들어온 유니크코드를 가지고 있는 로또 데이터가 몇 개 인지
         int totalCnt = lottoList.size();
 
-        if(totalCnt == 0){
+        if (totalCnt == 0) {
             throw new CustomException(CustomError.UNIQUE_CODE_NOT_FOUND);
         }
 
@@ -209,5 +173,61 @@ public class LottoService {
                 .fifthRank((long) fifthRank)
                 .totalCnt(totalCnt)
                 .build());
-     }
     }
+
+    private List<Byte> getRoundNum(Round round, Long num) {
+
+        List<Byte> rounds = new ArrayList<>();
+        rounds.add(round.getNum1());
+        rounds.add(round.getNum2());
+        rounds.add(round.getNum3());
+        rounds.add(round.getNum4());
+        rounds.add(round.getNum5());
+        rounds.add(round.getNum6());
+
+        return rounds;
+    }
+
+    private List<List<Byte>> getSingleLottoNum(List<LottoDto> lottoList){
+        List<List<Byte>> singleLottoNum = new ArrayList<>();
+        List<Byte> lottoNum = null;
+        for (LottoDto l : lottoList) {
+            lottoNum = new ArrayList<>();
+            lottoNum.add(l.getFirstNum());
+            lottoNum.add(l.getSecondNum());
+            lottoNum.add(l.getThirdNum());
+            lottoNum.add(l.getFourthNum());
+            lottoNum.add(l.getFifthNum());
+            lottoNum.add(l.getSixthNum());
+            singleLottoNum.add(lottoNum);
+
+        }
+
+        return singleLottoNum;
+    }
+
+    private HashMap<Byte, Integer> getNumberCountMap(List<Byte> lottoNum ,  List<Byte> rounds){
+        HashMap<Byte, Integer> map = new HashMap<>();
+
+            for (Byte value : rounds) {
+                map.put(value, map.getOrDefault(value, 0) + 1);
+            }
+            for (Byte aByte : lottoNum) {
+                map.put(aByte, map.getOrDefault(aByte, 0) - 1);
+            }
+
+            return map;
+    }
+
+    private int getWrongCount(HashMap<Byte, Integer> numberCountMap){
+        int cnt = 0;
+        for (Byte key : numberCountMap.keySet()) {
+            if (numberCountMap.get(key) > 0) {
+                cnt++;
+            }
+        }
+
+        return cnt;
+    }
+
+}

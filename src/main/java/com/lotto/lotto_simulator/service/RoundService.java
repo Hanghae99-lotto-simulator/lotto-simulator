@@ -695,7 +695,7 @@ public class RoundService {
     // JSON 형식의 당첨번호를 List에 저장
     private List<Byte> toNumList(JSONObject jsonObject){
         List<Byte> numList = new ArrayList<Byte>();
-        numList.add(Byte.parseByte(String.valueOf(jsonObject.get("drwNo1"))));
+        numList.add(Byte.parseByte(String.valueOf(jsonObject.get("drwtNo1"))));
         numList.add(Byte.parseByte(String.valueOf(jsonObject.get("drwtNo2"))));
         numList.add(Byte.parseByte(String.valueOf(jsonObject.get("drwtNo3"))));
         numList.add(Byte.parseByte(String.valueOf(jsonObject.get("drwtNo4"))));

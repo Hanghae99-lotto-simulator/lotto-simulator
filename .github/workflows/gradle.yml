@@ -1,5 +1,5 @@
 name: Java master with Gradle
-
+##자동 배포 서버 오류 재시작
 on:
   push:
     branches: 
